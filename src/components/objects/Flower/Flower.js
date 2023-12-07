@@ -8,6 +8,8 @@ class Flower extends Group {
         // Call parent Group() constructor
         super();
 
+        // this.z_vel = 0;
+
         // Init state
         this.state = {
             gui: parent.state.gui,
@@ -32,9 +34,14 @@ class Flower extends Group {
         this.state.gui.add(this.state, 'spin');
     }
 
+    translate(x, y) {
+        this.position.x += x;
+        this.position.z += y;
+    }
+
     spin() {
         // Add a simple twirl
-        this.state.twirl += 6 * Math.PI;
+        this.state.twirl += 0;
 
         // Use timing library for more precice "bounce" animation
         // TweenJS guide: http://learningthreejs.com/blog/2011/08/17/tweenjs-for-smooth-animation/
@@ -66,6 +73,8 @@ class Flower extends Group {
 
         // Advance tween animations, if any exist
         TWEEN.update();
+
+        // this.position.
     }
 }
 

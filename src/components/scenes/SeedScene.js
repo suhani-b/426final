@@ -19,10 +19,10 @@ class SeedScene extends Scene {
         this.background = new Color(0x7ec0ee);
 
         // Add meshes to scene
-        const land = new Land();
-        const flower = new Flower(this);
-        const lights = new BasicLights();
-        this.add(land, flower, lights);
+        this.land = new Land();
+        this.flower = new Flower(this);
+        this.lights = new BasicLights();
+        this.add(this.land, this.flower, this.lights);
 
         // Populate GUI
         this.state.gui.add(this.state, 'rotationSpeed', -5, 5);
@@ -40,6 +40,15 @@ class SeedScene extends Scene {
         for (const obj of updateList) {
             obj.update(timeStamp);
         }
+    }
+
+    spin() {
+        console.log("spinning");
+        this.flower.spin();
+    }
+
+    translate(x, y) {
+        this.flower.translate(x, y);
     }
 }
 

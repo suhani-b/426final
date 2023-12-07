@@ -51,5 +51,27 @@ const windowResizeHandler = () => {
     camera.aspect = innerWidth / innerHeight;
     camera.updateProjectionMatrix();
 };
+
+const handleKeyPress = (e) => {
+    console.log('hi');
+    console.log(e.key);
+    if (e.key == " ") {
+        console.log("space");
+        scene.spin();
+    }
+    if (e.key == "w") {
+        scene.translate(0, 0.1);
+    }
+    if (e.key == "a") {
+        scene.translate(-0.1, 0);
+    }
+    if (e.key == "s") {
+        scene.translate(0, -0.1);
+    }
+    if (e.key == "d") {
+        scene.translate(0.1, 0);
+    }
+}
 windowResizeHandler();
 window.addEventListener('resize', windowResizeHandler, false);
+window.addEventListener('keypress', handleKeyPress)
