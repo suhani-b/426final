@@ -15,8 +15,9 @@ const scene = new SeedScene();
 const camera = new PerspectiveCamera();
 const renderer = new WebGLRenderer({ antialias: true });
 
+let keys = {'w': 0, 'a': 0, 's': 0, 'd': 0, ' ': 0};
 // Set up camera
-camera.position.set(6, 3, -10);
+camera.position.set(0, 10, -10);
 camera.lookAt(new Vector3(0, 0, 0));
 
 // Set up renderer, canvas, and minor CSS adjustments
@@ -28,18 +29,18 @@ document.body.style.overflow = 'hidden'; // Fix scrolling
 document.body.appendChild(canvas);
 
 // Set up controls
-const controls = new OrbitControls(camera, canvas);
-controls.enableDamping = true;
-controls.enablePan = false;
-controls.minDistance = 4;
-controls.maxDistance = 16;
-controls.update();
+// const controls = new OrbitControls(camera, canvas);
+// controls.enableDamping = true;
+// controls.enablePan = false;
+// controls.minDistance = 4;
+// controls.maxDistance = 16;
+// controls.update();
 
 // Render loop
 const onAnimationFrameHandler = (timeStamp) => {
-    controls.update();
+    // controls.update();
     renderer.render(scene, camera);
-    scene.update && scene.update(timeStamp);
+    scene.update && scene.update(timeStamp, keys, camera);
     window.requestAnimationFrame(onAnimationFrameHandler);
 };
 window.requestAnimationFrame(onAnimationFrameHandler);
@@ -52,26 +53,54 @@ const windowResizeHandler = () => {
     camera.updateProjectionMatrix();
 };
 
-const handleKeyPress = (e) => {
-    console.log('hi');
-    console.log(e.key);
-    if (e.key == " ") {
-        console.log("space");
-        scene.spin();
+
+
+const handleKeyUp = (e) => {
+    if (e.key == "w" && keys['w'] > 0) {
+        keys['w'] = 0;
+        // keys['w'] -= 1;
     }
+    if (e.key == "a" && keys['a'] > 0) {
+        keys['a'] = 0;
+        // keys['a'] -= 1;
+    }
+    if (e.key == "s" && keys['s'] > 0) {
+        keys['s'] = 0;
+        // keys['s'] -= 1;
+    }
+    if (e.key == "d" && keys['d'] > 0) {
+        keys['d'] = 0;
+        // keys['d'] -= 1;
+    }
+    if (e.key == " ") {
+        keys[' '] = 0;
+    }
+    // scene.translate(keys);
+    
+}
+
+const handleKeyDown = (e) => {
     if (e.key == "w") {
-        scene.translate(0, 0.1);
+        keys['w'] += 1;
     }
     if (e.key == "a") {
-        scene.translate(-0.1, 0);
+        keys['a'] += 1;
     }
     if (e.key == "s") {
-        scene.translate(0, -0.1);
+        keys['s'] += 1;
     }
     if (e.key == "d") {
-        scene.translate(0.1, 0);
+        keys['d'] += 1;
     }
+    if (e.key == " ") {
+        keys[' '] = true;
+    }
+    // scene.translate(keys);
+    
 }
+
+
 windowResizeHandler();
 window.addEventListener('resize', windowResizeHandler, false);
-window.addEventListener('keypress', handleKeyPress)
+window.addEventListener('keyup', handleKeyUp);
+window.addEventListener('keydown', handleKeyDown);

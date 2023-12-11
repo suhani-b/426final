@@ -10,6 +10,8 @@ class Flower extends Group {
 
         // this.z_vel = 0;
 
+        this.angle = -Math.PI/2;
+
         // Init state
         this.state = {
             gui: parent.state.gui,
@@ -34,9 +36,60 @@ class Flower extends Group {
         this.state.gui.add(this.state, 'spin');
     }
 
-    translate(x, y) {
-        this.position.x += x;
-        this.position.z += y;
+    translate(dx, dy) {
+        let measure = Math.max(Math.abs(Math.cos(this.angle), Math.abs(Math.sin(this.angle))));
+
+        // let rot_speed = 1 + 0.5 * Math.abs(Math.log(1 - measure));
+        // let rot_speed = 0.2/(1 - measure);
+        let rot_speed = measure * 5 + 1;
+        // let rot_speed = 2;
+        this.position.x += dx;
+        this.position.z += dy;
+        let x = (Math.cos(this.angle) - rot_speed * dx);
+        let y = Math.sin(this.angle) + rot_speed * dy;
+        if (x != 0 || y != 0) {
+            x = x / Math.sqrt(x*x + y*y);
+            y = y / Math.sqrt(x*x + y*y);
+        }
+        this.angle = Math.atan2(y, x);
+        // if (x == 0 && y == 0) {
+        //     return;
+        // }
+        // if (x == 0) {
+        //     if (y > 0) {
+        //         this.angle = Math.PI / 2;
+        //     }
+        //     else {
+        //         this.angle = 3 * Math.PI / 2;
+        //     }
+        // }
+        // else {
+        //     let ang = Math.atan(y/x);
+        //     if (ang == 0) {
+        //         if (x > 0) {
+        //             this.angle = Math.PI;
+        //         }
+        //         else {
+        //             this.angle = 0;
+        //         }
+        //     }
+        //     else if (ang > 0 && y > 0) {
+        //         this.angle = ang;
+        //     }
+        //     else if (ang > 0 && y <= 0) {
+        //         this.angle = ang + Math.PI;
+        //     }
+        //     else if (ang <= 0 && y > 0) {
+        //         this.angle = ang + Math.PI;
+        //     }
+        //     else if (ang <= 0 && y <= 0) {
+        //         this.angle = ang + 2*Math.PI;
+        //     }
+        // }
+        console.log("Delta", dx, dy);
+        console.log("xy", x, y);
+        console.log("Angle", this.angle);
+        this.rotation.y = this.angle + Math.PI/2;
     }
 
     spin() {
@@ -61,20 +114,21 @@ class Flower extends Group {
     }
 
     update(timeStamp) {
-        if (this.state.bob) {
-            // Bob back and forth
-            this.rotation.z = 0.05 * Math.sin(timeStamp / 300);
-        }
-        if (this.state.twirl > 0) {
-            // Lazy implementation of twirl
-            this.state.twirl -= Math.PI / 8;
-            this.rotation.y += Math.PI / 8;
-        }
+        // if (this.state.bob) {
+        //     // Bob back and forth
+        //     this.rotation.z = 0.05 * Math.sin(timeStamp / 300);
+        // }
+        // if (this.state.twirl > 0) {
+        //     // Lazy implementation of twirl
+        //     this.state.twirl -= Math.PI / 8;
+        //     this.rotation.y += Math.PI / 8;
+        // }
 
-        // Advance tween animations, if any exist
-        TWEEN.update();
+        // // Advance tween animations, if any exist
+        // TWEEN.update();
+        return;
 
-        // this.position.
+        // console.log(this.position);
     }
 }
 
