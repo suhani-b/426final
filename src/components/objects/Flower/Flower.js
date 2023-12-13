@@ -2,7 +2,8 @@ import { Group } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { TWEEN } from 'three/examples/jsm/libs/tween.module.min.js';
 // import MODEL from '../Raccoon/low_poly_raccoon_procyon_lotor/scene.gltf';
-import MODEL from './flower.gltf';
+import MODEL from './low_poly_fox.glb';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 
 class Flower extends Group {
     constructor(parent) {
@@ -21,13 +22,15 @@ class Flower extends Group {
             twirl: 0,
         };
 
-        // Load object
         const loader = new GLTFLoader();
         console.log("LOADING", MODEL);
 
         this.name = 'flower';
         loader.load(MODEL, (gltf) => {
             console.log("LOADING GLTF", gltf, gltf.scene)
+            gltf.scene.scale.multiplyScalar(1.5);
+            gltf.scene.position.y = 1;
+            gltf.scene.rotateY(Math.PI);
             this.add(gltf.scene);
         });
 
@@ -55,43 +58,9 @@ class Flower extends Group {
             y = y / Math.sqrt(x*x + y*y);
         }
         this.angle = Math.atan2(y, x);
-        // if (x == 0 && y == 0) {
-        //     return;
-        // }
-        // if (x == 0) {
-        //     if (y > 0) {
-        //         this.angle = Math.PI / 2;
-        //     }
-        //     else {
-        //         this.angle = 3 * Math.PI / 2;
-        //     }
-        // }
-        // else {
-        //     let ang = Math.atan(y/x);
-        //     if (ang == 0) {
-        //         if (x > 0) {
-        //             this.angle = Math.PI;
-        //         }
-        //         else {
-        //             this.angle = 0;
-        //         }
-        //     }
-        //     else if (ang > 0 && y > 0) {
-        //         this.angle = ang;
-        //     }
-        //     else if (ang > 0 && y <= 0) {
-        //         this.angle = ang + Math.PI;
-        //     }
-        //     else if (ang <= 0 && y > 0) {
-        //         this.angle = ang + Math.PI;
-        //     }
-        //     else if (ang <= 0 && y <= 0) {
-        //         this.angle = ang + 2*Math.PI;
-        //     }
-        // }
-        console.log("Delta", dx, dy);
-        console.log("xy", x, y);
-        console.log("Angle", this.angle);
+        // console.log("Delta", dx, dy);
+        // console.log("xy", x, y);
+        // console.log("Angle", this.angle);
         this.rotation.y = this.angle + Math.PI/2;
     }
 

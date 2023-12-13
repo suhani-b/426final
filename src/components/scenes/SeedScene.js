@@ -19,7 +19,7 @@ class SeedScene extends Scene {
 
         // Set background to a nice color
         this.background = new Color(0x230140);
-        const ambient_light = new AmbientLight('white', 5);
+        const ambient_light = new AmbientLight('white', 2);
         this.add(ambient_light)
 
         // Add meshes to scene

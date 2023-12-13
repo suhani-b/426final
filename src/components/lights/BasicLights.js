@@ -9,16 +9,17 @@ class BasicLights extends Group {
         // const ambi = new AmbientLight(0x404040, 1.32);
         // const hemi = new HemisphereLight(0xffffbb, 0x080820, 2.3);
 
-        const player_light = new SpotLight(0xffffff, 10, 10, 0.5, 0.4, 0.8);
-        const dir = new SpotLight(0xffffff, 0, 7, 0.8, 1, 1);
+        const player_light = new SpotLight(0xffff00, 10, 100, 0.5, 0.4, 0.8);
+        // const dir = new SpotLight(0xff00ff, 0, 7, 0.8, 1, 1);
         const ambi = new AmbientLight(0x404040, 1.32);
-        const hemi = new HemisphereLight(0xffffbb, 0x080820, 0.3);
+        // const hemi = new HemisphereLight(0xffffbb, 0x080820, 0.3);
 
-        dir.position.set(5, 1, 2);
-        dir.target.position.set(0, 0, 0);
+        // dir.position.set(5, 1, 2);
+        // dir.target.position.set(10, 0, 10);
         // console.log(player_light);
+        player_light.position.set(30, 3, 3)
         this.player_light = player_light;
-        this.add(ambi, hemi, dir, player_light);
+        this.add(ambi, player_light);
     }
 }
 
