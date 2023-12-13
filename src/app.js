@@ -15,7 +15,7 @@ const scene = new SeedScene();
 const camera = new PerspectiveCamera();
 const renderer = new WebGLRenderer({ antialias: true });
 
-let keys = {'w': 0, 'a': 0, 's': 0, 'd': 0, ' ': 0};
+let keys = {'w': 0, 'a': 0, 's': 0, 'd': 0, ' ': 0, 'r': false};
 // Set up camera
 camera.position.set(0, 10, -10);
 camera.lookAt(new Vector3(0, 0, 0));
@@ -73,7 +73,10 @@ const handleKeyUp = (e) => {
         // keys['d'] -= 1;
     }
     if (e.key == " ") {
-        keys[' '] = 0;
+        keys['l'] = 0;
+    }
+    if (e.key == "r") {
+        keys['r'] = false;
     }
     // scene.translate(keys);
     
@@ -93,7 +96,10 @@ const handleKeyDown = (e) => {
         keys['d'] += 1;
     }
     if (e.key == " ") {
-        keys[' '] = true;
+        keys['l'] = true;
+    }
+    if (e.key == "r") {
+        keys['r'] = true;
     }
     // scene.translate(keys);
     
