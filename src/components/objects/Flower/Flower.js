@@ -37,7 +37,7 @@ class Flower extends Group {
         loader.load(MODEL, (gltf) => {
             console.log("LOADING GLTF", gltf, gltf.scene)
             gltf.scene.scale.multiplyScalar(1.5);
-            gltf.scene.position.y = 5;
+            gltf.scene.position.y = 1;
             gltf.scene.rotateY(Math.PI);
             this.add(gltf.scene);
         });

@@ -1,6 +1,6 @@
 import * as Dat from 'dat.gui';
 import { Scene, Color } from 'three';
-import { Flower, Land, Raccoon, Tree } from 'objects';
+import { Flower, Land, Raccoon } from 'objects';
 import { BasicLights } from 'lights';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { AmbientLight } from 'three';
@@ -24,7 +24,7 @@ class SeedScene extends Scene {
 
         // Set background to a nice color
         this.background = new Color(0x230140);
-        const ambient_light = new AmbientLight('white', 0.5);
+        const ambient_light = new AmbientLight('white', 2);
         this.add(ambient_light)
         this.lights = new BasicLights();
 
