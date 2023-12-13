@@ -61,7 +61,7 @@ class SeedScene extends Scene {
 
         // console.log(this.lights.player_light);
         this.lights.player_light.position.x = this.flower.position.x;
-        this.lights.player_light.position.y = this.flower.position.y + 0.5;
+        this.lights.player_light.position.y = this.flower.position.y + 0.8;
         this.lights.player_light.position.z = this.flower.position.z;
         this.lights.player_light.target.position.x = this.flower.position.x - 10*Math.cos(this.flower.angle);
         this.lights.player_light.target.position.y = this.flower.position.y + 0;
@@ -75,7 +75,14 @@ class SeedScene extends Scene {
         // console.log("Position", this.lights.player_light.position);
         // console.log("Target", this.lights.player_light.target.position);
         this.translate(keys);
+        if (keys[' ']) {
+            this.flower.attack_pressed = true;
+        }
+        else {
+            this.flower.attack_pressed = false;
+        }
     }
+
 
     spin() {
         console.log("spinning");

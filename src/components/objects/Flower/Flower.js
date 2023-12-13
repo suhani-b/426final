@@ -9,18 +9,15 @@ class Flower extends Group {
     constructor(parent) {
         // Call parent Group() constructor
         super();
-
+        this.attack_pressed = false;
+        this.battery = 1;
 
         // this.z_vel = 0;
         this.light = parent.lights.player_light;
         // light constants
-        this.light.decay = 0.2;
+        this.light.decay = 2;
         this.light.penumbra = 0;
-        this.light.intensity = 100;
-
-        
-        this.light_dist = 10;
-        this.light_angle = 0.5;
+        this.light.intensity = 0;
 
         this.angle = -Math.PI/2 + 0.001;
 
@@ -95,6 +92,10 @@ class Flower extends Group {
         jumpUp.start();
     }
 
+    attack_pressed() {
+        this.attack_pressed = true;
+    }
+
     update(timeStamp) {
         // if (this.state.bob) {
         //     // Bob back and forth
@@ -108,9 +109,28 @@ class Flower extends Group {
 
         // // Advance tween animations, if any exist
         // TWEEN.update();
+        // console.log(this.attack_pressed)
+
+        if (this.attack_pressed) {
+            this.light.intensity = 100;
+            this.light.angle = this.battery * 0.8;
+            this.light.distance = this.battery * 10;
+    
+            if (this.battery > 0) {
+                // takes T seconds to decrease fully
+                let T = 20;
+                this.battery -= 0.01 * 1/T;
+            }
+            else {
+                this.battery = 0;
+            }
+        }
+        else {
+            this.light.intensity = 0;
+        }
         
-        this.light.angle = 0.5;
-        this.light.distance = 10;
+
+        
         
 
         return;
