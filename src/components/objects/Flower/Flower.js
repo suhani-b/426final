@@ -10,9 +10,19 @@ class Flower extends Group {
         // Call parent Group() constructor
         super();
 
-        // this.z_vel = 0;
 
-        this.angle = -Math.PI/2;
+        // this.z_vel = 0;
+        this.light = parent.lights.player_light;
+        // light constants
+        this.light.decay = 0.2;
+        this.light.penumbra = 0;
+        this.light.intensity = 100;
+
+        
+        this.light_dist = 10;
+        this.light_angle = 0.5;
+
+        this.angle = -Math.PI/2 + 0.001;
 
         // Init state
         this.state = {
@@ -98,6 +108,11 @@ class Flower extends Group {
 
         // // Advance tween animations, if any exist
         // TWEEN.update();
+        
+        this.light.angle = 0.5;
+        this.light.distance = 10;
+        
+
         return;
 
         // console.log(this.position);

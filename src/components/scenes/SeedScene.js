@@ -21,6 +21,7 @@ class SeedScene extends Scene {
         this.background = new Color(0x230140);
         const ambient_light = new AmbientLight('white', 2);
         this.add(ambient_light)
+        this.lights = new BasicLights();
 
         // Add meshes to scene
         this.land = new Land();
@@ -28,7 +29,7 @@ class SeedScene extends Scene {
         // this.flower.scale.multiplyScalar(200);
         // this.fl = new Flower(this);
         this.raccoon = new Raccoon();
-        this.lights = new BasicLights();
+        
 
         this.add(this.land, this.flower, this.lights, this.raccoon);
 
@@ -41,6 +42,7 @@ class SeedScene extends Scene {
     }
 
     update(timeStamp, keys, camera) {
+        console.log(timeStamp);
         let camera_pos = this.flower.position.clone();
         camera_pos.x = camera_pos.x + 5*Math.cos(this.flower.angle);
         camera_pos.y = camera_pos.y + 2;
@@ -59,11 +61,16 @@ class SeedScene extends Scene {
 
         // console.log(this.lights.player_light);
         this.lights.player_light.position.x = this.flower.position.x;
-        this.lights.player_light.position.y = this.flower.position.y + 2;
+        this.lights.player_light.position.y = this.flower.position.y + 0.5;
         this.lights.player_light.position.z = this.flower.position.z;
-        this.lights.player_light.target.position.x = this.flower.position.x - Math.cos(this.flower.angle);
-        this.lights.player_light.target.position.y = this.flower.position.y + 1;
-        this.lights.player_light.target.position.z = this.flower.position.z + Math.sin(this.flower.angle);
+        this.lights.player_light.target.position.x = this.flower.position.x - 10*Math.cos(this.flower.angle);
+        this.lights.player_light.target.position.y = this.flower.position.y + 0;
+        this.lights.player_light.target.position.z = this.flower.position.z + 10*Math.sin(this.flower.angle);
+        // this.lights.player_light.target.position.x = this.flower.position.x;
+        // this.lights.player_light.target.position.y = this.flower.position.y + 0;
+        // this.lights.player_light.target.position.z = this.flower.position.z;
+        console.log("Player", this.lights.player_light.position);
+        console.log("Target", this.lights.player_light.target.position);
         this.add(this.lights.player_light.target);
         // console.log("Position", this.lights.player_light.position);
         // console.log("Target", this.lights.player_light.target.position);
@@ -101,6 +108,10 @@ class SeedScene extends Scene {
         console.log(x_change, z_change);
 
         this.flower.translate(x_change * speed, z_change * speed);
+    }
+
+    attack() {
+
     }
 }
 
