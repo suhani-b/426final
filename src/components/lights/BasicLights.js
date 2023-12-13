@@ -17,7 +17,6 @@ class BasicLights extends Group {
         // dir.position.set(5, 1, 2);
         // dir.target.position.set(10, 0, 10);
         // console.log(player_light);
-        player_light.position.set(30, 3, 3)
         this.player_light = player_light;
         this.add(ambi, player_light);
     }
