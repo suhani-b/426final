@@ -1,6 +1,7 @@
 import { Group } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { TWEEN } from 'three/examples/jsm/libs/tween.module.min.js';
+// import MODEL from '../Raccoon/low_poly_raccoon_procyon_lotor/scene.gltf';
 import MODEL from './flower.gltf';
 
 class Flower extends Group {
@@ -22,9 +23,11 @@ class Flower extends Group {
 
         // Load object
         const loader = new GLTFLoader();
+        console.log("LOADING", MODEL);
 
         this.name = 'flower';
         loader.load(MODEL, (gltf) => {
+            console.log("LOADING GLTF", gltf, gltf.scene)
             this.add(gltf.scene);
         });
 
