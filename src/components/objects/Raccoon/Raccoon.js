@@ -17,7 +17,7 @@ class Raccoon extends Group {
             gltf.scene.scale.multiplyScalar(2);
             gltf.scene.position.x = -8.6
             gltf.scene.position.z = 8.6
-            gltf.scene.position.y = 1
+            gltf.scene.position.y = 5
 
             this.add(gltf.scene);
         });

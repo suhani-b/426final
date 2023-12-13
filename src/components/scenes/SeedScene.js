@@ -1,6 +1,6 @@
 import * as Dat from 'dat.gui';
 import { Scene, Color } from 'three';
-import { Flower, Land, Raccoon } from 'objects';
+import { Flower, Land, Raccoon, Bolt } from 'objects';
 import { BasicLights } from 'lights';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { AmbientLight } from 'three';
@@ -24,13 +24,14 @@ class SeedScene extends Scene {
 
         // Set background to a nice color
         this.background = new Color(0x230140);
-        const ambient_light = new AmbientLight('white', 2);
+        const ambient_light = new AmbientLight('white', 0.5);
         this.add(ambient_light)
         this.lights = new BasicLights();
 
         // Add meshes to scene
         this.land = new Land();
         this.flower = new Flower(this);
+        this.bolt - new Bolt();
         // this.flower.scale.multiplyScalar(200);
         // this.fl = new Flower(this);
         // this.tree_1 = new Tree(-2.5, 2.5, 9);
@@ -57,7 +58,7 @@ class SeedScene extends Scene {
         this.resetting = false;
         
 
-        this.add(this.land, this.flower, this.lights);
+        this.add(this.land, this.flower, this.lights, this.bolt);
 
         // Populate GUI
         // this.state.gui.add(this.state, 'rotationSpeed', -5, 5);
