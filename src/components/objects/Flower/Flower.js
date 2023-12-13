@@ -9,6 +9,7 @@ class Flower extends Group {
     constructor(parent) {
         // Call parent Group() constructor
         super();
+        this.dead = false;
         this.attack_pressed = false;
         this.battery = 1;
 
@@ -22,12 +23,12 @@ class Flower extends Group {
         this.angle = -Math.PI/2 + 0.001;
 
         // Init state
-        this.state = {
-            gui: parent.state.gui,
-            bob: true,
-            spin: (() => this.spin()), // or this.spin.bind(this)
-            twirl: 0,
-        };
+        // this.state = {
+        //     gui: parent.state.gui,
+        //     bob: true,
+        //     spin: (() => this.spin()), // or this.spin.bind(this)
+        //     twirl: 0,
+        // };
 
         const loader = new GLTFLoader();
         console.log("LOADING", MODEL);
@@ -36,25 +37,29 @@ class Flower extends Group {
         loader.load(MODEL, (gltf) => {
             console.log("LOADING GLTF", gltf, gltf.scene)
             gltf.scene.scale.multiplyScalar(1.5);
-            gltf.scene.position.y = 5;
+            gltf.scene.position.y = 1;
             gltf.scene.rotateY(Math.PI);
             this.add(gltf.scene);
         });
 
         // Add self to parent's update list
-        parent.addToUpdateList(this);
+        // parent.addToUpdateList(this);
 
         // Populate GUI
-        this.state.gui.add(this.state, 'bob');
-        this.state.gui.add(this.state, 'spin');
+        // this.state.gui.add(this.state, 'bob');
+        // this.state.gui.add(this.state, 'spin');
     }
 
     translate(dx, dy) {
+        if (this.dead) {
+            return;
+        }
+
         let measure = Math.max(Math.abs(Math.cos(this.angle), Math.abs(Math.sin(this.angle))));
 
         // let rot_speed = 1 + 0.5 * Math.abs(Math.log(1 - measure));
         // let rot_speed = 0.2/(1 - measure);
-        let rot_speed = measure * 5 + 1;
+        let rot_speed = measure * 3 + 1;
         // let rot_speed = 2;
         this.position.x += dx;
         this.position.z += dy;
@@ -71,26 +76,26 @@ class Flower extends Group {
         this.rotation.y = this.angle + Math.PI/2;
     }
 
-    spin() {
-        // Add a simple twirl
-        this.state.twirl += 0;
+    // spin() {
+    //     // Add a simple twirl
+    //     // this.state.twirl += 0;
 
-        // Use timing library for more precice "bounce" animation
-        // TweenJS guide: http://learningthreejs.com/blog/2011/08/17/tweenjs-for-smooth-animation/
-        // Possible easings: http://sole.github.io/tween.js/examples/03_graphs.html
-        const jumpUp = new TWEEN.Tween(this.position)
-            .to({ y: this.position.y + 1 }, 300)
-            .easing(TWEEN.Easing.Quadratic.Out);
-        const fallDown = new TWEEN.Tween(this.position)
-            .to({ y: 0 }, 300)
-            .easing(TWEEN.Easing.Quadratic.In);
+    //     // Use timing library for more precice "bounce" animation
+    //     // TweenJS guide: http://learningthreejs.com/blog/2011/08/17/tweenjs-for-smooth-animation/
+    //     // Possible easings: http://sole.github.io/tween.js/examples/03_graphs.html
+    //     const jumpUp = new TWEEN.Tween(this.position)
+    //         .to({ y: this.position.y + 1 }, 300)
+    //         .easing(TWEEN.Easing.Quadratic.Out);
+    //     const fallDown = new TWEEN.Tween(this.position)
+    //         .to({ y: 0 }, 300)
+    //         .easing(TWEEN.Easing.Quadratic.In);
 
-        // Fall down after jumping up
-        jumpUp.onComplete(() => fallDown.start());
+    //     // Fall down after jumping up
+    //     jumpUp.onComplete(() => fallDown.start());
 
-        // Start animation
-        jumpUp.start();
-    }
+    //     // Start animation
+    //     jumpUp.start();
+    // }
 
     attack_pressed() {
         this.attack_pressed = true;
@@ -106,7 +111,7 @@ class Flower extends Group {
         //     this.state.twirl -= Math.PI / 8;
         //     this.rotation.y += Math.PI / 8;
         // }
-
+        // + Math.PI/2
         // // Advance tween animations, if any exist
         // TWEEN.update();
         // console.log(this.attack_pressed)
@@ -128,6 +133,9 @@ class Flower extends Group {
         else {
             this.light.intensity = 0;
         }
+
+
+
         
 
         
