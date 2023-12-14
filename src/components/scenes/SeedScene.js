@@ -31,7 +31,7 @@ class SeedScene extends Scene {
         // Add meshes to scene
         this.land = new Land();
         this.flower = new Flower(this);
-        this.bolt - new Bolt();
+        this.bolt = new Bolt();
         // this.flower.scale.multiplyScalar(200);
         // this.fl = new Flower(this);
         // this.tree_1 = new Tree(-2.5, 2.5, 9);

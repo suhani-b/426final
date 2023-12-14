@@ -12,8 +12,10 @@ class Bolt extends Group {
         this.name = 'bolt';
 
         loader.load(MODEL, (gltf) => {
-            gltf.scene.scale.multiplyScalar(50);
+            gltf.scene.scale.multiplyScalar(75);
             gltf.scene.position.y = 5;
+            gltf.scene.rotateX(Math.PI/2);
+            gltf.scene.rotateZ(Math.PI);
             this.add(gltf.scene);
         });
     }
