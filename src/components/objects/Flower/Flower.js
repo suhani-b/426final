@@ -8,6 +8,7 @@ import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 class Flower extends Group {
     constructor(parent) {
         // Call parent Group() constructor
+
         super();
         this.dead = false;
         this.attack_pressed = false;
@@ -37,7 +38,7 @@ class Flower extends Group {
         loader.load(MODEL, (gltf) => {
             console.log("LOADING GLTF", gltf, gltf.scene)
             gltf.scene.scale.multiplyScalar(1.5);
-            gltf.scene.position.y = 5;
+            gltf.scene.position.y = 1;
             gltf.scene.rotateY(Math.PI);
             this.add(gltf.scene);
         });
@@ -72,8 +73,9 @@ class Flower extends Group {
         let x = (Math.cos(this.angle) - rot_speed * dx);
         let y = Math.sin(this.angle) + rot_speed * dy;
         if (x != 0 || y != 0) {
-            x = x / Math.sqrt(x*x + y*y);
-            y = y / Math.sqrt(x*x + y*y);
+            let len = Math.sqrt(x*x + y*y);
+            x = x / len;
+            y = y / len;
         }
         this.angle = Math.atan2(y, x);
         // console.log("Delta", dx, dy);
