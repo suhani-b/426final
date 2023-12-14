@@ -12,6 +12,11 @@ class Raccoon extends Group {
         this.name = 'raccoon';
         this.player = player;
         this.scene = parent;
+        this.move_random = false;
+        this.random_x = 0;
+        this.random_z = 0;
+        this.to_random = 0.01;
+        this.random_counter = 0;
 
         loader.load(MODEL, (gltf) => {
             gltf.scene.scale.multiplyScalar(2);
@@ -25,6 +30,7 @@ class Raccoon extends Group {
         this.position.x = x0;
         this.position.z = z0;
         this.speed = 0.03;
+        this.randomness = 0;
         this.collision_radius = 0.5;
     }
 
@@ -46,11 +52,11 @@ class Raccoon extends Group {
             light_angle -= 2*Math.PI;
         }
 
-        console.log("Theta", theta);
-        console.log("Light angle", light_angle);
-        let light_width = this.player.light.angle;
-        console.log("Light width", light_width);
-        console.log("Light distance", this.player.light.distance);
+        // console.log("Theta", theta);
+        // console.log("Light angle", light_angle);
+        let light_width = this.player.light.angle + 0.1;
+        // console.log("Light width", light_width);
+        // console.log("Light distance", this.player.light.distance);
         if (Math.abs(theta - light_angle) < light_width || Math.abs(theta - light_angle - 2*Math.PI) < light_width || Math.abs(theta - light_angle + 2*Math.PI) < light_width) {
             if (Math.sqrt(x*x + z*z) < this.player.light.distance) {
                 return true;
@@ -61,11 +67,10 @@ class Raccoon extends Group {
     }
 
     update(timestamp) {
-        console.log("raccoon update");
-        console.log("Player", this.player.position);
-        console.log("Raccoon", this.position);
-        console.log("Attacked", this.is_attacked());
-
+        // console.log("raccoon update");
+        // console.log("Player", this.player.position);
+        // console.log("Raccoon", this.position);
+        // console.log("Attacked", this.is_attacked());
         let dx = this.player.position.x - this.position.x;
         let dz = this.player.position.z - this.position.z;
         if (Math.sqrt(dx*dx + dz*dz) < this.collision_radius) {
@@ -77,17 +82,37 @@ class Raccoon extends Group {
             dz = dz/(Math.sqrt(dx*dx + dz*dz));
         }
 
-        
-
-        this.rotation.y = Math.atan2(dz, -dx) + this.base_rot;
-
-        console.log("vec", dx, dz);
+        let rand_var = Math.random();
+        if (this.move_random && rand_var < this.away_random) {
+            this.move_random = false;
+        }
+        else if (!this.move_random && rand_var < this.to_random) {
+            this.move_random = true;
+            let rx = 0.1 * (Math.random() - 0.5) + dx;
+            let rz = 0.1 * (Math.random() - 0.5) + dz;
+            if (rx != 0 || rz != 0) {
+                this.random_x = rx/(Math.sqrt(rx*rx + rz*rz));
+                this.random_z = rz/(Math.sqrt(rx*rx + rz*rz));
+            }
+        }
 
         if (this.is_attacked()) {
             dx = -dx;
             dz = -dz;
             this.speed = 0.02;
+            // this.rotation.y = -Math.atan2(dz, -dx) + this.base_rot;
+            this.position.x += this.speed * (dx);
+            this.position.z += this.speed * (dz);
+            return;
         }
+        if (this.move_random) {
+            this.rotation.y = Math.atan2(this.random_z, -this.random_x) + this.base_rot;
+            this.position.x += this.speed * (this.random_x);
+            this.position.z += this.speed * (this.random_z);
+            return;
+        }
+
+        this.rotation.y = Math.atan2(dz, -dx) + this.base_rot;
         this.position.x += this.speed * (dx);
         this.position.z += this.speed * (dz);
         

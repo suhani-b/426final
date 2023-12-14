@@ -51,6 +51,11 @@ class Flower extends Group {
     }
 
     translate(dx, dy) {
+        if (dx == 0 && dy == 0) {
+            return;
+        }
+
+
         if (this.dead) {
             return;
         }
@@ -60,6 +65,7 @@ class Flower extends Group {
         // let rot_speed = 1 + 0.5 * Math.abs(Math.log(1 - measure));
         // let rot_speed = 0.2/(1 - measure);
         let rot_speed = measure * 3 + 1;
+        rot_speed *= 0.3;
         // let rot_speed = 2;
         this.position.x += dx;
         this.position.z += dy;
