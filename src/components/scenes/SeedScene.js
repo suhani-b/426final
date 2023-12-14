@@ -3,17 +3,20 @@ import { Scene, Color } from 'three';
 import { Flower, Land, Raccoon, Bolt, Syringe, Trap, PineTree } from 'objects';
 import { BasicLights } from 'lights';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { AmbientLight } from 'three';
+import { AmbientLight, Vector3 } from 'three';
 
 class SeedScene extends Scene {
     constructor() {
         // Call parent Scene() constructor
         super();
 
-        this.stage_radius = 10;
+        this.stage_radius = 8;
 
         this.last_spawn = 0;
         this.spawn_interval = 5000;
+
+        this.last_bolt_spawn = 0;
+        this.bolt_spawn_interval = 1000;
 
         // Init state
         // this.state = {
@@ -24,29 +27,52 @@ class SeedScene extends Scene {
 
         // Set background to a nice color
         this.background = new Color(0x230140);
-        const ambient_light = new AmbientLight('purple', 1);
+        const ambient_light = new AmbientLight('white', 2);
         this.add(ambient_light)
         this.lights = new BasicLights();
 
         // Add meshes to scene
         this.land = new Land();
         this.flower = new Flower(this);
-        this.bolt = new Bolt();
         this.syringe = new Syringe();
         this.trap = new Trap();
+        this.bolts = [];
+        this.num_bolts = 0;
+        // this.flower.scale.multiplyScalar(200);
+        // this.fl = new Flower(this);
+        // this.tree_1 = new Tree(-2.5, 2.5, 9);
+        // this.tree_2 = new Tree(-5, 2.5, 7.5);
+        // this.tree_3 = new Tree(-8, 2.5, 6);
+        // this.tree_4 = new Tree(-10.2, 2.5, 4);
+        // this.tree_5 = new Tree(-11, 2.5, 1);
+        // this.tree_6 = new Tree(-12, 2.5, -1);
+        // this.tree_7 = new Tree(-2, 2.5, 5);
+        // this.tree_8 = new Tree(-2, 2.5, 5);
+        // // this.tree.position.y = 5;
+        // this.raccoon = new Raccoon();
+        
+
+        // this.add(this.land, this.flower,
+        //     this.lights, this.raccoon,
+        //     this.tree_1, this.tree_2,
+        //     this.tree_3, this.tree_4,
+        //     this.tree_5, this.tree_6,
+        //     this.tree_7, this.tree_8);
         this.raccoons =[];
-        this.add_raccoon();
+        this.add_raccoon(0);
         this.game_over = false;
         this.resetting = false;
+
+        let r = this.stage_radius;
         
         for (let angle = 0; angle < (2 * Math.PI); angle += (Math.PI / 18)) {
-            this.add(new PineTree(12*Math.cos(angle), 3, 12*Math.sin(angle)));
-            this.add(new PineTree(11*Math.cos(angle + (Math.PI/36)), 3, 11*Math.sin(angle + (Math.PI/36))));
-            this.add(new PineTree(10*Math.cos(angle), 3, 10*Math.sin(angle)));
-            this.add(new PineTree(9*Math.cos(angle + (Math.PI/36)), 3, 9*Math.sin(angle + (Math.PI/36))));
+            this.add(new PineTree((r+3)*Math.cos(angle), 0, (r+3)*Math.sin(angle)));
+            this.add(new PineTree((r+2)*Math.cos(angle + (Math.PI/36)), 0, (r+2)*Math.sin(angle + (Math.PI/36))));
+            this.add(new PineTree((r+1)*Math.cos(angle), 0, (r+1)*Math.sin(angle)));
+            this.add(new PineTree(r*Math.cos(angle + (Math.PI/36)), 0, r*Math.sin(angle + (Math.PI/36))));
         }
 
-        this.add(this.land, this.flower, this.lights, this.bolt, this.syringe, this.trap);
+        this.add(this.land, this.flower, this.lights, this.syringe, this.trap);
 
         // Populate GUI
         // this.state.gui.add(this.state, 'rotationSpeed', -5, 5);
@@ -70,7 +96,20 @@ class SeedScene extends Scene {
 
     }
 
-    add_raccoon() {
+    add_bolt() {
+        let theta = 2 * Math.PI * (Math.random());
+        let r = Math.random() * this.stage_radius;
+        let x0 = r * Math.cos(theta);
+        let z0 = r * Math.sin(theta);
+
+        let new_bolt = new Bolt(this, x0, z0);
+        this.bolts.push(new_bolt);
+        this.add(new_bolt);
+        this.num_bolts += 1;
+    }
+
+
+    add_raccoon(timestamp) {
        let theta = Math.random() * 2 * Math.PI;
        let x0 = Math.cos(theta) * (this.stage_radius + 1);
        let z0 = Math.sin(theta) * (this.stage_radius + 1);
@@ -81,7 +120,9 @@ class SeedScene extends Scene {
         z0 = -z0;
        }
        
-       let new_raccoon = new Raccoon(this, this.flower, x0, z0);
+       let secs = timestamp / 10000 + 1;
+
+       let new_raccoon = new Raccoon(this, this.flower, x0, z0, secs);
        this.raccoons.push(new_raccoon);
        this.add(new_raccoon);
     }
@@ -100,21 +141,38 @@ class SeedScene extends Scene {
             return;
         }
 
-        console.log(timeStamp);
+        // console.log(timeStamp);
         let camera_pos = this.flower.position.clone();
-        camera_pos.x = camera_pos.x + 5*Math.cos(this.flower.angle);
-        camera_pos.y = camera_pos.y + 2;
-        camera_pos.z = camera_pos.z - 5*Math.sin(this.flower.angle);
+        // console.log(this.flower);
+        camera.position.x = camera_pos.x + 8*Math.cos(this.flower.angle);
+        camera.position.y = camera_pos.y + 5;
+        camera.position.z = camera_pos.z - 8*Math.sin(this.flower.angle);
+        // camera_pos.x = 10;
+        // camera_pos.y = 10;
+        // camera_pos.z = 10;
+        // console.log(camera_pos);
+        // camera.position.x = 10;
+        // camera.position.y = 10;
+        // camera.position.z = 10;
         // camera.position.set(camera_pos)
         // console.log("Cam", camera_pos);
         // console.log("Flow", this.flower.position);
+
+        let lookAtPos = new Vector3(0, 0, 0);
+        lookAtPos.x = this.flower.position.x - Math.cos(this.flower.angle);
+        lookAtPos.z = this.flower.position.z + Math.sin(this.flower.angle);
+        lookAtPos.y = this.flower.position.y + 2;
         camera.lookAt(this.flower.position);
+        // camera.lookAt(lookAtPos);
         // const { rotationSpeed, updateList } = this.state;
         // this.rotation.y = (rotationSpeed * timeStamp) / 10000;
 
         // Call update for each object in the updateList
         for (let raccoon of this.raccoons) {
-            raccoon.update(timeStamp);
+            raccoon.update_2(timeStamp);
+        }
+        for (let bolt of this.bolts) {
+            bolt.update();
         }
         
         this.flower.update(timeStamp);
@@ -125,7 +183,7 @@ class SeedScene extends Scene {
 
         // console.log(this.lights.player_light);
         this.lights.player_light.position.x = this.flower.position.x;
-        this.lights.player_light.position.y = this.flower.position.y + 0.8;
+        this.lights.player_light.position.y = this.flower.position.y + 1;
         this.lights.player_light.position.z = this.flower.position.z;
         this.lights.player_light.target.position.x = this.flower.position.x - 10*Math.cos(this.flower.angle);
         this.lights.player_light.target.position.y = this.flower.position.y + 0;
@@ -138,7 +196,7 @@ class SeedScene extends Scene {
         this.add(this.lights.player_light.target);
         // console.log("Position", this.lights.player_light.position);
         // console.log("Target", this.lights.player_light.target.position);
-        this.translate(keys);
+        this.translate(keys, camera);
         if (keys['l']) {
             this.flower.attack_pressed = true;
         }
@@ -148,7 +206,11 @@ class SeedScene extends Scene {
 
         if (timeStamp - this.last_spawn > this.spawn_interval) {
             this.last_spawn = timeStamp;
-            this.add_raccoon();
+            this.add_raccoon(timeStamp);
+        }
+        if (timeStamp - this.last_bolt_spawn > this.bolt_spawn_interval && this.num_bolts == 0) {
+            this.last_bolt_spawn = timeStamp;
+            this.add_bolt();
         }
     }
 
@@ -158,10 +220,11 @@ class SeedScene extends Scene {
         this.flower.spin();
     }
 
-    translate(keys_down) {
+    translate(keys_down, camera) {
         let speed = 0.06;
         let x_change = 0;
         let z_change = 0;
+        // console.log(x_change, z_change);
         // let x_change = keys_down['a'] - keys_down['d'];
         // let z_change = keys_down['w'] - keys_down['s'];
         if (keys_down['w']) {
@@ -177,13 +240,40 @@ class SeedScene extends Scene {
             x_change -= 1;
         }
         if (x_change != 0 || z_change != 0) {
-            x_change = x_change/Math.sqrt(x_change*x_change + z_change*z_change);
-            z_change = z_change/Math.sqrt(x_change*x_change + z_change*z_change);
+            let len = Math.sqrt(x_change*x_change + z_change*z_change)
+            x_change = x_change/len;
+            z_change = z_change/len;
         }
         
         // console.log(x_change, z_change);
+        let diff_x = -(this.flower.position.x - camera.position.x);
+        let diff_z = this.flower.position.z - camera.position.z;
+        let A = -diff_z;
+        let C = diff_x;
+        let B = diff_x;
+        let D = diff_z;
+        let x_change_2 = A * x_change + B * z_change;
+        let z_change_2 = C * x_change + D * z_change;
 
-        this.flower.translate(x_change * speed, z_change * speed);
+        let old_length = Math.sqrt(x_change_2 * x_change_2 + z_change_2 * z_change_2);
+        if (x_change_2 != 0 || z_change_2 != 0) {
+            x_change_2 = x_change_2/old_length;
+            z_change_2 = z_change_2/old_length;
+        }
+
+        // let temp = x_change_2;
+        // x_change_2 = z_change_2;
+        // z_change_2 = temp;
+
+        x_change_2 = -x_change_2;
+
+
+
+        // x_change_2 = x_change;
+        // z_change_2 = z_change;
+
+        this.flower.translate(x_change_2 * speed, z_change_2 * speed);
+        // console.log(Math.sqrt((this.flower.position.x - camera.position.x) * (this.flower.position.x - camera.position.x) + (this.flower.position.z - camera.position.z) * (this.flower.position.z - camera.position.z)))
     }
 }
 
