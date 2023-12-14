@@ -1,6 +1,6 @@
 import * as Dat from 'dat.gui';
 import { Scene, Color } from 'three';
-import { Flower, Land, Raccoon, Bolt, Syringe, Trap } from 'objects';
+import { Flower, Land, Raccoon, Bolt, Syringe, Trap, PineTree } from 'objects';
 import { BasicLights } from 'lights';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { AmbientLight } from 'three';
@@ -24,7 +24,7 @@ class SeedScene extends Scene {
 
         // Set background to a nice color
         this.background = new Color(0x230140);
-        const ambient_light = new AmbientLight('white', 0.5);
+        const ambient_light = new AmbientLight('purple', 1);
         this.add(ambient_light)
         this.lights = new BasicLights();
 
@@ -34,31 +34,17 @@ class SeedScene extends Scene {
         this.bolt = new Bolt();
         this.syringe = new Syringe();
         this.trap = new Trap();
-        // this.flower.scale.multiplyScalar(200);
-        // this.fl = new Flower(this);
-        // this.tree_1 = new Tree(-2.5, 2.5, 9);
-        // this.tree_2 = new Tree(-5, 2.5, 7.5);
-        // this.tree_3 = new Tree(-8, 2.5, 6);
-        // this.tree_4 = new Tree(-10.2, 2.5, 4);
-        // this.tree_5 = new Tree(-11, 2.5, 1);
-        // this.tree_6 = new Tree(-12, 2.5, -1);
-        // this.tree_7 = new Tree(-2, 2.5, 5);
-        // this.tree_8 = new Tree(-2, 2.5, 5);
-        // // this.tree.position.y = 5;
-        // this.raccoon = new Raccoon();
-        
-
-        // this.add(this.land, this.flower,
-        //     this.lights, this.raccoon,
-        //     this.tree_1, this.tree_2,
-        //     this.tree_3, this.tree_4,
-        //     this.tree_5, this.tree_6,
-        //     this.tree_7, this.tree_8);
         this.raccoons =[];
         this.add_raccoon();
         this.game_over = false;
         this.resetting = false;
         
+        for (let angle = 0; angle < (2 * Math.PI); angle += (Math.PI / 18)) {
+            this.add(new PineTree(12*Math.cos(angle), 3, 12*Math.sin(angle)));
+            this.add(new PineTree(11*Math.cos(angle + (Math.PI/36)), 3, 11*Math.sin(angle + (Math.PI/36))));
+            this.add(new PineTree(10*Math.cos(angle), 3, 10*Math.sin(angle)));
+            this.add(new PineTree(9*Math.cos(angle + (Math.PI/36)), 3, 9*Math.sin(angle + (Math.PI/36))));
+        }
 
         this.add(this.land, this.flower, this.lights, this.bolt, this.syringe, this.trap);
 

@@ -12,7 +12,7 @@ class Land extends Group {
         this.name = 'land';
 
         loader.load(MODEL, (gltf) => {
-            gltf.scene.scale.multiplyScalar(1);
+            gltf.scene.scale.multiplyScalar(2.5);
             this.add(gltf.scene);
         });
     }
