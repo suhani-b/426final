@@ -12,7 +12,7 @@ class Syringe extends Group {
         this.name = 'syringe';
 
         loader.load(MODEL, (gltf) => {
-            gltf.scene.scale.multiplyScalar(0.005);
+            gltf.scene.scale.multiplyScalar(0.01);
             gltf.scene.position.y = 5;
             gltf.scene.position.x = -3;
             gltf.scene.rotateY(Math.PI/2);

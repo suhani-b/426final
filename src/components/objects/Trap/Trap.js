@@ -1,6 +1,6 @@
 import { Group } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import MODEL from './trape.glb';
+import MODEL from './bear_trap.glb';
 
 class Trap extends Group {
     constructor() {
