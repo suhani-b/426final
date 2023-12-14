@@ -16,6 +16,8 @@ class Land extends Group {
             gltf.scene.scale.multiplyScalar(2.5);
             this.add(gltf.scene);
         });
+
+        this.position.y = -1;
     }
 }
 
