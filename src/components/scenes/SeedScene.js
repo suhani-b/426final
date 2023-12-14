@@ -39,6 +39,7 @@ class SeedScene extends Scene {
         this.bolts = [];
         this.num_bolts = 0;
         this.syringe = new Syringe();
+        this.trap = new Trap();
         // this.flower.scale.multiplyScalar(200);
         // this.fl = new Flower(this);
         // this.tree_1 = new Tree(-2.5, 2.5, 9);
