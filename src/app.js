@@ -6,7 +6,7 @@
  * handles window resizes.
  *
  */
-import { WebGLRenderer, PerspectiveCamera, Vector3 } from 'three';
+import { WebGLRenderer, PerspectiveCamera, Vector3, AudioListener, Audio, AudioLoader } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { SeedScene } from 'scenes';
 
@@ -130,6 +130,26 @@ document.body.appendChild(canvas);
 // controls.minDistance = 4;
 // controls.maxDistance = 16;
 // controls.update();
+
+// ********* AUDIO ************ //
+const listener = new AudioListener();
+camera.add(listener);
+const sounds = [];
+const raccoon_1 = new Audio(listener);
+// const raccoon_2 = new Audio(listener);
+// const raccoon_3 = new Audio(listener);
+sounds['racooon_1'] = raccoon_1;
+// sounds['raccoon_2'] = raccoon_2;
+// sounds['raccoon_3'] = raccoon_3;
+
+const audioLoader = new AudioLoader();
+audioLoader.load('https://raw.githubusercontent.com/sb5334/426final/src/sounds/raccoon1.wav', function(buffer) {
+    raccoon_1.setBuffer(buffer);
+    raccoon_1.setLoop(true);
+    raccoon_1.setVolume(0.3);
+});
+
+// ****************************** //
 
 
 
