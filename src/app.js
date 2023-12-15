@@ -10,8 +10,54 @@ import { WebGLRenderer, PerspectiveCamera, Vector3 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { SeedScene } from 'scenes';
 
+function initTimer() {
+    const timerElement = document.createElement('div');
+    timerElement.id = 'timer'; // Set an ID for styling
+    timerElement.style.position = 'absolute';
+    timerElement.style.top = '20px'; // Adjust the position as needed
+    timerElement.style.left = '20px'; // Adjust the position as needed
+    timerElement.style.padding = '10px';
+    timerElement.style.background = '#fff';
+    timerElement.style.border = '1px solid #000';
+    timerElement.style.fontFamily = 'Arial, sans-serif';
+
+    // Append the timer element to the document body
+    document.body.appendChild(timerElement);
+
+    return timerElement;
+}
+
+
+
+// Initialize the timer element
+const timerElement = initTimer();
+
+function initBattery() {
+    const batteryElement = document.createElement('div');
+    batteryElement.id = 'battery'; // Set an ID for styling
+    batteryElement.style.position = 'absolute';
+    batteryElement.style.marginTop = '100px';
+    batteryElement.style.top = '20px'; // Adjust the position as needed
+    batteryElement.style.left = '20px'; // Adjust the position as needed
+    batteryElement.style.padding = '10px';
+    batteryElement.style.background = '#fff';
+    batteryElement.style.border = '1px solid #000';
+    batteryElement.style.fontFamily = 'Arial, sans-serif';
+
+    // Append the timer element to the document body
+    document.body.appendChild(batteryElement);
+
+    return batteryElement;
+}
+
+
+
+// Initialize the timer element
+const batteryElement = initBattery();
+
+
 // Initialize core ThreeJS components
-const scene = new SeedScene();
+const scene = new SeedScene(timerElement, batteryElement);
 const camera = new PerspectiveCamera();
 const renderer = new WebGLRenderer({ antialias: true });
 
@@ -36,11 +82,13 @@ document.body.appendChild(canvas);
 // controls.maxDistance = 16;
 // controls.update();
 
+
+
 // Render loop
 const onAnimationFrameHandler = (timeStamp) => {
     // controls.update();
     renderer.render(scene, camera);
-    scene.update && scene.update(timeStamp, keys, camera);
+    scene.update && scene.update(timeStamp, keys, camera, timerElement);
     window.requestAnimationFrame(onAnimationFrameHandler);
 };
 window.requestAnimationFrame(onAnimationFrameHandler);
@@ -110,3 +158,18 @@ windowResizeHandler();
 window.addEventListener('resize', windowResizeHandler, false);
 window.addEventListener('keyup', handleKeyUp);
 window.addEventListener('keydown', handleKeyDown);
+
+
+
+
+//   function updateTimer(timerElement) {
+//     let time = 0;
+  
+//     setInterval(function() {
+//       time += 1; // Increment the timer value (you can adjust this logic)
+//       timerElement.innerText = 'Timer: ' + time; // Display the timer value
+//     }, 1000); // Update the timer every second (1000ms)
+//   }
+  
+//   // Start the timer
+//   updateTimer(timerElement);

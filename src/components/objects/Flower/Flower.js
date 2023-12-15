@@ -15,6 +15,7 @@ class Flower extends Group {
         this.battery = 1;
 
         // this.z_vel = 0;
+        this.scene = parent;
         this.light = parent.lights.player_light;
         // light constants
         this.light.decay = 2;
@@ -68,6 +69,11 @@ class Flower extends Group {
         let rot_speed = measure * 3 + 1;
         rot_speed *= 0.3;
         // let rot_speed = 2;
+        let new_x = this.position.x + dx;
+        let new_z = this.position.z + dy;
+        if (Math.sqrt(new_x * new_x + new_z * new_z) > this.scene.stage_radius - 1) {
+            return;
+        }
         this.position.x += dx;
         this.position.z += dy;
         let x = (Math.cos(this.angle) - rot_speed * dx);

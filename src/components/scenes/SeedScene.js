@@ -6,11 +6,15 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { AmbientLight, Vector3 } from 'three';
 
 class SeedScene extends Scene {
-    constructor() {
+    constructor(timerElement, batteryElement) {
         // Call parent Scene() constructor
+
         super();
 
-        this.stage_radius = 8;
+        
+        this.timer = timerElement;
+        this.battery = batteryElement;
+        this.stage_radius = 12;
 
         this.last_spawn = 0;
         this.spawn_interval = 5000;
@@ -27,7 +31,7 @@ class SeedScene extends Scene {
 
         // Set background to a nice color
         this.background = new Color(0x230140);
-        const ambient_light = new AmbientLight('white', 2);
+        const ambient_light = new AmbientLight('purple', 1);
         this.add(ambient_light)
         this.lights = new BasicLights();
 
@@ -40,8 +44,7 @@ class SeedScene extends Scene {
         this.num_bolts = 0;
         this.syringe = new Syringe();
         this.trap = new Trap();
-        this.bolts = [];
-        this.num_bolts = 0;
+        this.last_restart = 0;
         // this.flower.scale.multiplyScalar(200);
         // this.fl = new Flower(this);
         // this.tree_1 = new Tree(-2.5, 2.5, 9);
@@ -86,7 +89,7 @@ class SeedScene extends Scene {
     //     this.state.updateList.push(object);
     // }
 
-    reset() {
+    reset(timestamp) {
         console.log("reset");
         this.game_over = false;
         this.remove(this.flower);
@@ -97,14 +100,19 @@ class SeedScene extends Scene {
         this.flower = new Flower(this);
         this.add(this.flower);
         this.raccoons = [];
+        this.timer.innerText = "Timer: 0";
+        this.last_restart = Math.floor(timestamp / 1000);
 
     }
 
     add_bolt() {
+        console.log('adding');
         let theta = 2 * Math.PI * (Math.random());
         let r = Math.random() * this.stage_radius;
         let x0 = r * Math.cos(theta);
         let z0 = r * Math.sin(theta);
+
+
 
         let new_bolt = new Bolt(this, x0, z0);
         this.bolts.push(new_bolt);
@@ -132,18 +140,24 @@ class SeedScene extends Scene {
     }
 
     update(timeStamp, keys, camera) {
+
         if (keys['r'] && this.game_over) {
             this.resetting = true;
         }
         else {
             if (this.resetting) {
                 this.resetting = false;
-                this.reset();
+                this.reset(timeStamp);
             }
         }
         if (this.game_over) {
+            
             return;
         }
+        this.timer.innerText = "Timer: " + (Math.floor(timeStamp / 1000) - this.last_restart);
+        let bat = Math.max(0, this.flower.battery);
+        this.battery.innerText = "Battery: " + Math.floor(bat * 100) + "%";
+       
 
         // console.log(timeStamp);
         let camera_pos = this.flower.position.clone();

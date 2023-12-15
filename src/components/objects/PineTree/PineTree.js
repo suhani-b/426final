@@ -13,9 +13,9 @@ class PineTree extends Group {
 
         loader.load(MODEL, (gltf) => {
             //gltf.scene.scale.multiplyScalar(1.4);
-            gltf.scene.position.x = x * 2
+            gltf.scene.position.x = x
             gltf.scene.position.y = y
-            gltf.scene.position.z = z * 2
+            gltf.scene.position.z = z
 
             this.add(gltf.scene);
         });
