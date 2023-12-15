@@ -288,7 +288,7 @@ class SeedScene extends Scene {
         if (this.game_over) {
             console.log(this.score);
             console.log(this.highscore);
-            let s = "You Got Rabies! <br>" + 
+            let s = "Ahhhhhhh! <br> You Got Rabies!<br><br>" + 
             "Your score is " + this.score + "<br>";
             if (this.score > this.highscore) {
                 
@@ -297,7 +297,7 @@ class SeedScene extends Scene {
             else {
                 s = s + "Your highscore is still " + this.highscore + "<br>";
             }
-            s = s + "Press r to restart";
+            s = s + "<br>Press r to restart";
             this.endScreen.innerHTML = s;
             this.endScreen.style.visibility = 'visible';
             return;

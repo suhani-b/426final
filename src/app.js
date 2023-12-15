@@ -20,7 +20,7 @@ function initScreen() {
     startScreen.style.left = '25vw'; // Adjust the position as needed
     startScreen.style.height = '500px';
     startScreen.style.width = '600px';
-    startScreen.style.padding = '20px';
+    startScreen.style.padding = '30px';
     startScreen.style.background = 'rgba(117, 46, 156, 0.95)';
     startScreen.style.fontFamily = 'Monospace, Monaco';
     startScreen.style.fontSize = "30px";
@@ -28,15 +28,15 @@ function initScreen() {
     startScreen.style.textAlign = 'center';
     startScreen.style.visibility = 'hidden';
     startScreen.innerHTML = 
-    "Rabid Raccoons <br>" +
+    "<h2>Rabid Raccoons</h2>" +
     "<hr>" +
-    "<p style='font-size: 16px'>Hi Mr.Fox! You have been on top of the Princeton campus foodchain for many years. <br>" +
+    "<p style='font-size: 16px'>Hi Mr.Fox! You have been on top of the Princeton campus foodchain for many years. <br><br>" +
     "But lately a new species has been challenging your presence, the campus is under a Raccoon invasion. " +
     "It's upto you to take the throne back, save this school, and establish yourself as the king Fox of Princeton again.</p>" + 
-    "<p style='font-size: 16px; text-align: left'>How to play: <br>" +
+    "<p style='font-size: 16px; text-align: left;'><u>How to play: </u><br>" +
     "1. Move around using w, a, s, d <br>" +
     "2. Spacebar to use flashlight to scare away raccoons. Your torch battery dies down, collect battery around the map. <br>" +
-    "3. Collect shockwave vaccines and press l to repel all raccoons around you</p> <br>";
+    "3. Collect shockwave vaccines and press l to repel all raccoons around you</p>";
 
     document.body.appendChild(startScreen);
 
