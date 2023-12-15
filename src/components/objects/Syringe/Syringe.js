@@ -36,6 +36,7 @@ class Syringe extends Group {
             this.position.z += 1000;
             this.scene.num_syringes -= 1;
             player.num_syringes += 1;
+            this.parent.lights.syringe_light.intensity = 0;
         }
         
     }

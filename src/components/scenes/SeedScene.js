@@ -1,9 +1,11 @@
 import * as Dat from 'dat.gui';
-import { Scene, Color } from 'three';
-import { Fox, Land, Raccoon, BigRaccoon, Bolt, Syringe, Trap, PineTree, Grass } from 'objects';
+import { Scene, Color, Vector3 } from 'three';
+import { Fox, Land, Raccoon, BigRaccoon, Bolt, Syringe, Trap, PineTree, Grass, Cube } from 'objects';
 import { BasicLights } from 'lights';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { AmbientLight, Vector3 } from 'three';
+import * as THREE from 'three';
+
+
 
 class SeedScene extends Scene {
     constructor(timerElement, batteryElement, startScreen, endScreen) {
@@ -39,10 +41,19 @@ class SeedScene extends Scene {
         // };
 
         // Set background to a nice color
-        this.background = new Color(0x230140);
-        const ambient_light = new AmbientLight('white', 2);
-        this.add(ambient_light)
+        this.first_update = true;
+        this.background = new Color(0x000000);
+        // const ambient_light = new AmbientLight('white', 2);
+        // this.add(ambient_light)
         this.lights = new BasicLights();
+        this.lights.moon_light.intensity = 5;
+        this.lights.moon_light.position.x = 0;
+        this.lights.moon_light.position.z = 0;
+        this.lights.moon_light.position.y = this.stage_radius + 4;
+        this.lights.moon_light.target.position.x = 0;
+        this.lights.moon_light.target.position.z = 0;
+        this.lights.moon_light.target.position.y = 0;
+        this.add(this.lights.moon_light.target);
 
         // Add meshes to scene
         this.land = new Land();
@@ -53,6 +64,7 @@ class SeedScene extends Scene {
         this.bolts = [];
         this.num_bolts = 0;
         this.syringe = new Syringe();
+        this.cube = new Cube();
         // this.trap = new Trap();
         this.last_restart = 0;
 
@@ -64,12 +76,18 @@ class SeedScene extends Scene {
         this.game_over = false;
         this.resetting = false;
 
-        this.add(this.land);
+        // this.add(this.land);
         this.add(this.fox);
         this.add(this.lights);
-        this.add(this.land);
+        this.add(this.lights.syringe_light.target);
+        this.add(this.lights.bolt_light.target);
+        // this.add(this.land);
         this.add(this.syringe);
-        // this.createScenery();
+        this.add(this.cube);
+
+        this.cube.position.y = -50;
+
+        this.createScenery();
         // Populate GUI
         // this.state.gui.add(this.state, 'rotationSpeed', -5, 5);
     }
@@ -87,11 +105,11 @@ class SeedScene extends Scene {
             this.add(new PineTree((r+1)*Math.cos(angle), 0, (r+1)*Math.sin(angle)));
             this.add(new PineTree(r*Math.cos(angle + (Math.PI/36)), 0, r*Math.sin(angle + (Math.PI/36))));
         }
-        for (let i = -r; i <= r; i++) {
-            for (let j = -r; j <= r; j++) {
-                this.add(new Grass(i, 0, j));
-            }
-        }
+        // for (let i = -r; i <= r; i++) {
+        //     for (let j = -r; j <= r; j++) {
+        //         this.add(new Grass(i, 0, j));
+        //     }
+        // }
     }
 
     reset(timestamp) {
@@ -114,6 +132,11 @@ class SeedScene extends Scene {
         this.timer.innerText = "Score: 0";
         this.last_restart = Math.floor(timestamp / 1000);
 
+        this.last_spawn = 0;
+        this.last_big_spawn = 0;
+        this.last_bolt_spawn = 0;
+        this.last_syringe_spawn = 0;
+
     }
 
     add_bolt() {
@@ -132,6 +155,14 @@ class SeedScene extends Scene {
         this.bolts.push(new_bolt);
         this.add(new_bolt);
         this.num_bolts += 1;
+
+        this.lights.bolt_light.position.x = x0;
+        this.lights.bolt_light.position.z = z0;
+        this.lights.bolt_light.position.y = 2;
+        this.lights.bolt_light.target.position.x = x0;
+        this.lights.bolt_light.target.position.z = z0;
+        this.lights.bolt_light.target.position.y = 0;
+        this.lights.bolt_light.intensity = 5;
     }
 
     add_syringe() {
@@ -150,10 +181,19 @@ class SeedScene extends Scene {
         this.syringes.push(new_syringe);
         this.add(new_syringe);
         this.num_syringes += 1;
+
+        this.lights.syringe_light.position.x = x0;
+        this.lights.syringe_light.position.z = z0;
+        this.lights.syringe_light.position.y = 2;
+        this.lights.syringe_light.target.position.x = x0;
+        this.lights.syringe_light.target.position.z = z0;
+        this.lights.syringe_light.target.position.y = 0;
+        this.lights.syringe_light.intensity = 5;
     }
 
 
     add_raccoon(timestamp) {
+        console.log('adding raccoon');
        let theta = Math.random() * 2 * Math.PI;
        let x0 = Math.cos(theta) * (this.stage_radius + 1);
        let z0 = Math.sin(theta) * (this.stage_radius + 1);
@@ -164,13 +204,14 @@ class SeedScene extends Scene {
         z0 = -z0;
        }
        
-       let secs = timestamp / 10000 + 1;
+       let secs = (timestamp - this.last_restart) / 10000 + 1;
        let new_raccoon = new Raccoon(this, this.fox, x0, z0, secs);
        this.raccoons.push(new_raccoon);
        this.add(new_raccoon);
     }
 
     add_big_raccoon(timestamp) {
+        console.log('adding big');
         let theta = Math.random() * 2 * Math.PI;
         let x0 = Math.cos(theta) * (this.stage_radius + 1);
         let z0 = Math.sin(theta) * (this.stage_radius + 1);
@@ -188,8 +229,46 @@ class SeedScene extends Scene {
      }
 
     update(timeStamp, keys, camera) {
-        if (keys['k']) {
-            this.startScreen.style.visibility = 'hidden';
+        this.time = timeStamp - 1000 * this.last_restart;
+        console.log(this.last_restart);
+        // console.log(timeStamp);
+        // console.log(this.first_update);
+        let camera_pos = this.fox.position.clone();
+        // console.log(this.fox);
+        camera.position.x = camera_pos.x + 8*Math.cos(this.fox.angle);
+        camera.position.y = camera_pos.y + 5;
+        camera.position.z = camera_pos.z - 8*Math.sin(this.fox.angle);
+        // camera_pos.x = 10;
+        // camera_pos.y = 10;
+        // camera_pos.z = 10;
+        // console.log(camera_pos);
+        // camera.position.x = 10;
+        // camera.position.y = 10;
+        // camera.position.z = 10;
+        // camera.position.set(camera_pos)
+        // console.log("Cam", camera_pos);
+        // console.log("Flow", this.fox.position);
+
+        let lookAtPos = new Vector3(0, 0, 0);
+        lookAtPos.x = this.fox.position.x - Math.cos(this.fox.angle);
+        lookAtPos.z = this.fox.position.z + Math.sin(this.fox.angle);
+        lookAtPos.y = this.fox.position.y + 2;
+        camera.lookAt(this.fox.position);
+
+        if (this.first_update && timeStamp > 5000) {
+            console.log("first update!");
+            this.startScreen.innerHTML += "<p>Press k to start game!</p>";
+            this.first_update = false;
+        }
+
+        if (this.startScreen.style.visibility != 'hidden') {
+            if (keys['k'] && timeStamp > 5000) {
+                this.startScreen.style.visibility = 'hidden';
+                this.last_restart = Math.floor(timeStamp/1000);
+            }
+            else {
+                return;
+            }
         }
         // console.log(timeStamp);
 
@@ -225,28 +304,7 @@ class SeedScene extends Scene {
         this.battery.innerText = "Battery: " + Math.floor(bat * 100) + "%";
        
 
-        // console.log(timeStamp);
-        let camera_pos = this.fox.position.clone();
-        // console.log(this.fox);
-        camera.position.x = camera_pos.x + 8*Math.cos(this.fox.angle);
-        camera.position.y = camera_pos.y + 5;
-        camera.position.z = camera_pos.z - 8*Math.sin(this.fox.angle);
-        // camera_pos.x = 10;
-        // camera_pos.y = 10;
-        // camera_pos.z = 10;
-        // console.log(camera_pos);
-        // camera.position.x = 10;
-        // camera.position.y = 10;
-        // camera.position.z = 10;
-        // camera.position.set(camera_pos)
-        // console.log("Cam", camera_pos);
-        // console.log("Flow", this.fox.position);
-
-        let lookAtPos = new Vector3(0, 0, 0);
-        lookAtPos.x = this.fox.position.x - Math.cos(this.fox.angle);
-        lookAtPos.z = this.fox.position.z + Math.sin(this.fox.angle);
-        lookAtPos.y = this.fox.position.y + 2;
-        camera.lookAt(this.fox.position);
+        
         // camera.lookAt(lookAtPos);
         // const { rotationSpeed, updateList } = this.state;
         // this.rotation.y = (rotationSpeed * timeStamp) / 10000;
@@ -301,20 +359,20 @@ class SeedScene extends Scene {
             this.fox.attack_pressed = false;
         }
 
-        if (timeStamp - this.last_spawn > this.spawn_interval) {
-            this.last_spawn = timeStamp;
+        if (this.time - this.last_spawn > this.spawn_interval) {
+            this.last_spawn = this.time;
             this.add_raccoon(timeStamp);
         }
-        if (timeStamp - this.last_big_spawn > this.big_spawn_interval) {
-            this.last_big_spawn = timeStamp;
+        if (this.time - this.last_big_spawn > this.big_spawn_interval) {
+            this.last_big_spawn = this.time;
             this.add_big_raccoon(timeStamp);
         }
-        if (timeStamp - this.last_bolt_spawn > this.bolt_spawn_interval && this.num_bolts == 0) {
-            this.last_bolt_spawn = timeStamp;
+        if (this.time - this.last_bolt_spawn > this.bolt_spawn_interval && this.num_bolts == 0) {
+            this.last_bolt_spawn = this.time;
             this.add_bolt();
         }
-        if (timeStamp - this.last_syringe_spawn > this.syringe_spawn_interval && this.num_syringes == 0) {
-            this.last_syringe_spawn = timeStamp;
+        if (this.time - this.last_syringe_spawn > this.syringe_spawn_interval && this.num_syringes == 0) {
+            this.last_syringe_spawn = this.time;
             this.add_syringe();
         }
     }

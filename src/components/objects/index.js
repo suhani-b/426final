@@ -7,3 +7,4 @@ export * from './Syringe';
 export * from './Trap';
 export * from './PineTree';
 export * from './Grass';
+export * from './Cube';

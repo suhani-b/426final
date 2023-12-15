@@ -40,6 +40,7 @@ class Bolt extends Group {
             if (player.battery > 1) {
                 player.battery = 1;
             }
+            this.parent.lights.bolt_light.intensity = 0;
         }
         
     }

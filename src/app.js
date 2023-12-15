@@ -8,7 +8,10 @@
  */
 import { WebGLRenderer, PerspectiveCamera, Vector3, AudioListener, Audio, AudioLoader } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { SeedScene } from 'scenes';
+import { SeedScene } from 'scenes'
+import * as THREE from 'three';
+import { TGALoader } from 'three/examples/jsm/loaders/TGALoader.js';
+
 
 function initScreen() {
     const startScreen = document.createElement('div');
@@ -33,8 +36,7 @@ function initScreen() {
     "<p style='font-size: 16px; text-align: left'>How to play: <br>" +
     "1. Move around using w, a, s, d <br>" +
     "2. Spacebar to use flashlight to scare away raccoons. Your torch battery dies down, collect battery around the map. <br>" +
-    "3. Collect shockwave vaccines and press l to repel all raccoons around you</p> <br>" + 
-    "<p>Press k to start game!</p>";
+    "3. Collect shockwave vaccines and press l to repel all raccoons around you</p> <br>";
 
     document.body.appendChild(startScreen);
 
@@ -160,7 +162,7 @@ audioLoader.load('https://raw.githubusercontent.com/sb5334/426final/src/sounds/r
 const onAnimationFrameHandler = (timeStamp) => {
     // controls.update();
     renderer.render(scene, camera);
-    if (keys['k'] == true) {scene.update && scene.update(timeStamp, keys, camera, timerElement)};
+    scene.update && scene.update(timeStamp, keys, camera, timerElement);
     window.requestAnimationFrame(onAnimationFrameHandler);
 };
 window.requestAnimationFrame(onAnimationFrameHandler);
