@@ -1,6 +1,6 @@
 import * as Dat from 'dat.gui';
 import { Scene, Color } from 'three';
-import { Fox, Land, Raccoon, BigRaccoon, Bolt, Syringe, Trap, PineTree } from 'objects';
+import { Fox, Land, Raccoon, BigRaccoon, Bolt, Syringe, Trap, PineTree, Grass } from 'objects';
 import { BasicLights } from 'lights';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { AmbientLight, Vector3 } from 'three';
@@ -10,6 +10,7 @@ class SeedScene extends Scene {
         // Call parent Scene() constructor
 
         super();
+        
 
         this.timer = timerElement;
         this.battery = batteryElement;
@@ -63,8 +64,12 @@ class SeedScene extends Scene {
         this.game_over = false;
         this.resetting = false;
 
-        this.add(this.land, this.fox, this.lights, this.syringe, this.trap);
-        this.createScenery();
+        this.add(this.land);
+        this.add(this.fox);
+        this.add(this.lights);
+        this.add(this.land);
+        this.add(this.syringe);
+        // this.createScenery();
         // Populate GUI
         // this.state.gui.add(this.state, 'rotationSpeed', -5, 5);
     }
@@ -92,6 +97,7 @@ class SeedScene extends Scene {
     reset(timestamp) {
         console.log("reset");
         this.game_over = false;
+        this.highscore = this.score;
         this.endScreen.style.visibility = 'hidden';
         this.remove(this.fox);
         for (let raccoon of this.raccoons) {
@@ -168,15 +174,15 @@ class SeedScene extends Scene {
         let theta = Math.random() * 2 * Math.PI;
         let x0 = Math.cos(theta) * (this.stage_radius + 1);
         let z0 = Math.sin(theta) * (this.stage_radius + 1);
-        let dx = x0 - this.flower.position.x;
-        let dz = z0 - this.flower.position.z;
+        let dx = x0 - this.fox.position.x;
+        let dz = z0 - this.fox.position.z;
         if (Math.sqrt(dx*dx + dz*dz) < 5) {
          x0 = -x0;
          z0 = -z0;
         }
 
  
-        let new_raccoon = new BigRaccoon(this, this.flower, x0, z0);
+        let new_raccoon = new BigRaccoon(this, this.fox, x0, z0);
         this.big_raccoons.push(new_raccoon);
         this.add(new_raccoon);
      }
@@ -185,7 +191,7 @@ class SeedScene extends Scene {
         if (keys['k']) {
             this.startScreen.style.visibility = 'hidden';
         }
-        console.log(timeStamp);
+        // console.log(timeStamp);
 
         if (keys['r'] && this.game_over) {
             this.resetting = true;
@@ -197,14 +203,24 @@ class SeedScene extends Scene {
             }
         }
         if (this.game_over) {
-            this.endScreen.innerHTML = 
-            "You Got Rabies! <br>" + 
-            "Your score is " + this.timer.innerText + "<br>" +
-            "Press r to restart";
+            console.log(this.score);
+            console.log(this.highscore);
+            let s = "You Got Rabies! <br>" + 
+            "Your score is " + this.score + "<br>";
+            if (this.score > this.highscore) {
+                
+                s = s + "New highscore! <br>";
+            }
+            else {
+                s = s + "Your highscore is still " + this.highscore + "<br>";
+            }
+            s = s + "Press r to restart";
+            this.endScreen.innerHTML = s;
             this.endScreen.style.visibility = 'visible';
             return;
         }
-        this.timer.innerText = "Score: " + (Math.floor(timeStamp / 1000) - this.last_restart);
+        this.score = (Math.floor(timeStamp / 1000) - this.last_restart)
+        this.timer.innerText = "Score: " + this.score;
         let bat = Math.max(0, this.fox.battery);
         this.battery.innerText = "Battery: " + Math.floor(bat * 100) + "%";
        

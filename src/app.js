@@ -54,6 +54,9 @@ function initEnd() {
     endScreen.style.color = '#fff';
     endScreen.style.textAlign = 'center';
     endScreen.style.visibility = 'hidden';
+    endScreen.style.display = 'flex';
+    endScreen.style.justifyContent = 'center';
+    endScreen.style.alignItems = 'center';
 
     document.body.appendChild(endScreen);
 
