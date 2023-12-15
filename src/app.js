@@ -10,6 +10,56 @@ import { WebGLRenderer, PerspectiveCamera, Vector3 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { SeedScene } from 'scenes';
 
+function initScreen() {
+    const startScreen = document.createElement('div');
+    startScreen.style.position = 'absolute';
+    startScreen.style.top = '10vh'; // Adjust the position as needed
+    startScreen.style.left = '25vw'; // Adjust the position as needed
+    startScreen.style.height = '500px';
+    startScreen.style.width = '600px';
+    startScreen.style.padding = '20px';
+    startScreen.style.background = 'rgba(117, 46, 156, 0.95)';
+    startScreen.style.fontFamily = 'Monospace, Monaco';
+    startScreen.style.fontSize = "30px";
+    startScreen.style.color = '#fff';
+    startScreen.style.textAlign = 'center';
+    startScreen.style.visibility = 'hidden';
+    startScreen.innerHTML = 
+    "Rabid Raccoons <br>" +
+    "<hr>" +
+    "<p style='font-size: 16px'>Hi Mr.Fox! You have been on top of the Princeton campus foodchain for many years. <br>" +
+    "But lately a new species has been challenging your presence, the campus is under a Raccoon invasion. " +
+    "It's upto you to take the throne back, save this school, and establish yourself as the king Fox of Princeton again.</p>" + 
+    "<p style='font-size: 16px; text-align: left'>How to play: <br>" +
+    "1. Move around using w, a, s, d <br>" +
+    "2. Spacebar to use flashlight to scare away raccoons. Your torch battery dies down, collect battery around the map. <br>" +
+    "3. Collect shockwave vaccines and press l to repel all raccoons around you</p> <br>" + 
+    "<p>Press k to start game!</p>";
+
+    document.body.appendChild(startScreen);
+
+    return startScreen;
+}
+function initEnd() {
+    const endScreen = document.createElement('div');
+    endScreen.style.position = 'absolute';
+    endScreen.style.top = '10vh'; // Adjust the position as needed
+    endScreen.style.left = '25vw'; // Adjust the position as needed
+    endScreen.style.height = '500px';
+    endScreen.style.width = '600px';
+    endScreen.style.padding = '20px';
+    endScreen.style.background = 'rgba(117, 46, 156, 0.95)';
+    endScreen.style.fontFamily = 'Monospace, Monaco';
+    endScreen.style.fontSize = "30px";
+    endScreen.style.color = '#fff';
+    endScreen.style.textAlign = 'center';
+    endScreen.style.visibility = 'hidden';
+
+    document.body.appendChild(endScreen);
+
+    return endScreen;
+}
+
 function initTimer() {
     const timerElement = document.createElement('div');
     timerElement.id = 'timer'; // Set an ID for styling
@@ -17,9 +67,10 @@ function initTimer() {
     timerElement.style.top = '20px'; // Adjust the position as needed
     timerElement.style.left = '20px'; // Adjust the position as needed
     timerElement.style.padding = '10px';
-    timerElement.style.background = '#fff';
-    timerElement.style.border = '1px solid #000';
+    timerElement.style.background = '#000';
+    timerElement.style.border = '0.5px solid #fff';
     timerElement.style.fontFamily = 'Arial, sans-serif';
+    timerElement.style.color = '#fff';
 
     // Append the timer element to the document body
     document.body.appendChild(timerElement);
@@ -27,22 +78,18 @@ function initTimer() {
     return timerElement;
 }
 
-
-
-// Initialize the timer element
-const timerElement = initTimer();
-
 function initBattery() {
     const batteryElement = document.createElement('div');
     batteryElement.id = 'battery'; // Set an ID for styling
     batteryElement.style.position = 'absolute';
-    batteryElement.style.marginTop = '100px';
+    batteryElement.style.marginTop = '50px';
     batteryElement.style.top = '20px'; // Adjust the position as needed
     batteryElement.style.left = '20px'; // Adjust the position as needed
     batteryElement.style.padding = '10px';
-    batteryElement.style.background = '#fff';
-    batteryElement.style.border = '1px solid #000';
+    batteryElement.style.background = '#000';
+    batteryElement.style.border = '0.5px solid #fff';
     batteryElement.style.fontFamily = 'Arial, sans-serif';
+    batteryElement.style.color = '#fff';
 
     // Append the timer element to the document body
     document.body.appendChild(batteryElement);
@@ -52,16 +99,18 @@ function initBattery() {
 
 
 
-// Initialize the timer element
+const timerElement = initTimer();
 const batteryElement = initBattery();
+const startScreen = initScreen()
+const endScreen = initEnd();
 
 
 // Initialize core ThreeJS components
-const scene = new SeedScene(timerElement, batteryElement);
+const scene = new SeedScene(timerElement, batteryElement, startScreen, endScreen);
 const camera = new PerspectiveCamera();
 const renderer = new WebGLRenderer({ antialias: true });
 
-let keys = {'w': 0, 'a': 0, 's': 0, 'd': 0, ' ': 0, 'r': false};
+let keys = {'w': 0, 'a': 0, 's': 0, 'd': 0, ' ': 0, 'r': false, 'k': false};
 // Set up camera
 camera.position.set(0, 10, -10);
 camera.lookAt(new Vector3(0, 0, 0));
@@ -129,6 +178,9 @@ const handleKeyUp = (e) => {
     if (e.key == "r") {
         keys['r'] = false;
     }
+    if (e.key == "k") {
+        keys['k'] = false;
+    }
     // scene.translate(keys);
     
 }
@@ -154,6 +206,9 @@ const handleKeyDown = (e) => {
     }
     if (e.key == "l") {
         keys['l'] = true;
+    }
+    if (e.key == "k") {
+        keys['k'] = true;
     }
     // scene.translate(keys);
     

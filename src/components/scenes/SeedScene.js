@@ -6,7 +6,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { AmbientLight, Vector3 } from 'three';
 
 class SeedScene extends Scene {
-    constructor(timerElement, batteryElement) {
+    constructor(timerElement, batteryElement, startScreen, endScreen) {
         // Call parent Scene() constructor
 
         super();
@@ -14,8 +14,11 @@ class SeedScene extends Scene {
         
         this.timer = timerElement;
         this.battery = batteryElement;
+        this.startScreen = startScreen;
+        this.startScreen.style.visibility = 'visible';
+        this.endScreen = endScreen;
         this.stage_radius = 12;
-
+        this.highscore = 0;
         this.last_spawn = 0;
         this.spawn_interval = 5000;
 
@@ -34,7 +37,7 @@ class SeedScene extends Scene {
 
         // Set background to a nice color
         this.background = new Color(0x230140);
-        const ambient_light = new AmbientLight('purple', 1);
+        const ambient_light = new AmbientLight('white', 2);
         this.add(ambient_light)
         this.lights = new BasicLights();
 
@@ -49,26 +52,7 @@ class SeedScene extends Scene {
         this.syringe = new Syringe();
         this.trap = new Trap();
         this.last_restart = 0;
-        // this.flower.scale.multiplyScalar(200);
-        // this.fl = new Flower(this);
-        // this.tree_1 = new Tree(-2.5, 2.5, 9);
-        // this.tree_2 = new Tree(-5, 2.5, 7.5);
-        // this.tree_3 = new Tree(-8, 2.5, 6);
-        // this.tree_4 = new Tree(-10.2, 2.5, 4);
-        // this.tree_5 = new Tree(-11, 2.5, 1);
-        // this.tree_6 = new Tree(-12, 2.5, -1);
-        // this.tree_7 = new Tree(-2, 2.5, 5);
-        // this.tree_8 = new Tree(-2, 2.5, 5);
-        // // this.tree.position.y = 5;
-        // this.raccoon = new Raccoon();
-        
 
-        // this.add(this.land, this.flower,
-        //     this.lights, this.raccoon,
-        //     this.tree_1, this.tree_2,
-        //     this.tree_3, this.tree_4,
-        //     this.tree_5, this.tree_6,
-        //     this.tree_7, this.tree_8);
         this.raccoons =[];
         this.add_raccoon(0);
         this.game_over = false;
@@ -96,6 +80,7 @@ class SeedScene extends Scene {
     reset(timestamp) {
         console.log("reset");
         this.game_over = false;
+        this.endScreen.style.visibility = 'hidden';
         this.remove(this.flower);
         for (let raccoon of this.raccoons) {
             this.remove(raccoon);
@@ -104,7 +89,7 @@ class SeedScene extends Scene {
         this.flower = new Flower(this);
         this.add(this.flower);
         this.raccoons = [];
-        this.timer.innerText = "Timer: 0";
+        this.timer.innerText = "Score: 0";
         this.last_restart = Math.floor(timestamp / 1000);
 
     }
@@ -171,7 +156,9 @@ class SeedScene extends Scene {
     }
 
     update(timeStamp, keys, camera) {
-
+        if (keys['k']) {
+            this.startScreen.style.visibility = 'hidden';
+        }
         if (keys['r'] && this.game_over) {
             this.resetting = true;
         }
@@ -182,10 +169,14 @@ class SeedScene extends Scene {
             }
         }
         if (this.game_over) {
-            
+            this.endScreen.innerHTML = 
+            "You Got Rabies! <br>" + 
+            "Your score is " + this.timer.innerText + "<br>" +
+            "Press r to restart";
+            this.endScreen.style.visibility = 'visible';
             return;
         }
-        this.timer.innerText = "Timer: " + (Math.floor(timeStamp / 1000) - this.last_restart);
+        this.timer.innerText = "Score: " + (Math.floor(timeStamp / 1000) - this.last_restart);
         let bat = Math.max(0, this.flower.battery);
         this.battery.innerText = "Battery: " + Math.floor(bat * 100) + "%";
        
@@ -247,8 +238,6 @@ class SeedScene extends Scene {
         // console.log("Target", this.lights.player_light.target.position);
         this.add(this.lights.player_light.target);
         this.add(this.lights.attack_light.target);
-        // console.log("Position", this.lights.player_light.position);
-        // console.log("Target", this.lights.player_light.target.position);
         this.translate(keys, camera);
 
         if (keys['l']) {
