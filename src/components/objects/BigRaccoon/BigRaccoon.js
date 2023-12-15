@@ -108,13 +108,14 @@ class BigRaccoon extends Group {
         let dx = this.position.x - this.player.position.x;
         let dz = this.position.z - this.player.position.z;
         if (Math.sqrt(dx*dx + dz*dz) < this.player.attack2_radius) {
+            this.scene.num_big -= 1;
             return true;
         }
 
     }
 
     update_2(timestamp) {
-        console.log("Big Raccoon", this.position);
+        // console.log("Big Raccoon", this.position);
         if (this.is_attacked_2()) {
             this.dead = true;
         }

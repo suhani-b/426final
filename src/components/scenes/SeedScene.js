@@ -26,13 +26,13 @@ class SeedScene extends Scene {
         this.spawn_interval = 5000;
 
         this.last_big_spawn = 0;
-        this.big_spawn_interval = 20000;
+        this.big_spawn_interval = 30000;
 
         this.last_bolt_spawn = 0;
         this.bolt_spawn_interval = 5000;
 
         this.last_syringe_spawn = 0;
-        this.syringe_spawn_interval = 10000;
+        this.syringe_spawn_interval = 20000;
 
         // Init state
         // this.state = {
@@ -70,8 +70,10 @@ class SeedScene extends Scene {
         this.last_restart = 0;
 
         this.raccoons =[];
+        this.num_raccoons = 0;
         // this.add_raccoon(0);
         this.big_raccoons = [];
+        this.num_big = 0;
         // this.add_big_raccoon(0);
 
         this.game_over = false;
@@ -130,6 +132,10 @@ class SeedScene extends Scene {
         this.add(this.fox);
         this.raccoons = [];
         this.big_raccoons = [];
+        this.num_raccoons = 0;
+        this.num_big = 0;
+        this.num_bolts = 0;
+        this.num_syringes = 0;
         this.timer.innerText = "Score: 0";
         this.last_restart = Math.floor(timestamp / 1000);
 
@@ -137,6 +143,10 @@ class SeedScene extends Scene {
         this.last_big_spawn = 0;
         this.last_bolt_spawn = 0;
         this.last_syringe_spawn = 0;
+        this.spawn_interval = 5000;
+        this.big_spawn_interval = 30000;
+        this.bolt_spawn_interval = 5000;
+        this.syringe_spawn_interval = 20000;
 
     }
 
@@ -206,10 +216,12 @@ class SeedScene extends Scene {
         z0 = -z0;
        }
        
-       let secs = (timestamp - this.last_restart) / 10000 + 1;
-       let new_raccoon = new Raccoon(this, this.fox, x0, z0, secs);
+       let secs = (timestamp - this.last_restart) / 30000 + 1;
+       let speed = 0.02 + (1/40) * ((timestamp - this.last_restart) / (1000*100));
+       let new_raccoon = new Raccoon(this, this.fox, x0, z0, secs, speed);
        this.raccoons.push(new_raccoon);
        this.add(new_raccoon);
+       this.num_raccoons += 1;
     }
 
     add_big_raccoon(timestamp) {
@@ -228,18 +240,19 @@ class SeedScene extends Scene {
         let new_raccoon = new BigRaccoon(this, this.fox, x0, z0);
         this.big_raccoons.push(new_raccoon);
         this.add(new_raccoon);
+        this.num_big += 1;
      }
 
     update(timeStamp, keys, camera) {
-        this.time = timeStamp - 1000 * this.last_restart;
-        console.log(this.last_restart);
+        console.log("Num raccoons", this.num_raccoons);
+        
         // console.log(timeStamp);
         // console.log(this.first_update);
         let camera_pos = this.fox.position.clone();
         // console.log(this.fox);
-        camera.position.x = camera_pos.x + 8*Math.cos(this.fox.angle);
+        camera.position.x = camera_pos.x + 5*Math.cos(this.fox.angle);
         camera.position.y = camera_pos.y + 5;
-        camera.position.z = camera_pos.z - 8*Math.sin(this.fox.angle);
+        camera.position.z = camera_pos.z - 5*Math.sin(this.fox.angle);
         // camera_pos.x = 10;
         // camera_pos.y = 10;
         // camera_pos.z = 10;
@@ -257,7 +270,8 @@ class SeedScene extends Scene {
         lookAtPos.x = this.fox.position.x - Math.cos(this.fox.angle);
         lookAtPos.z = this.fox.position.z + Math.sin(this.fox.angle);
         lookAtPos.y = this.fox.position.y + 2;
-        camera.lookAt(this.fox.position);
+        camera.lookAt(lookAtPos);
+        // camera.lookAt(this.fox.position);
 
         if (this.first_update && timeStamp > 5000) {
             console.log("first update!");
@@ -285,9 +299,12 @@ class SeedScene extends Scene {
                 this.reset(timeStamp);
             }
         }
+
+        this.time = timeStamp - 1000 * this.last_restart;
+        // console.log("Last spawn", this.last_big_spawn);
+        // console.log("Time", this.time);
+
         if (this.game_over) {
-            console.log(this.score);
-            console.log(this.highscore);
             let s = "Ahhhhhhh! <br> You Got Rabies!<br><br>" + 
             "Your score is " + this.score + "<br>";
             if (this.score > this.highscore) {
@@ -363,20 +380,28 @@ class SeedScene extends Scene {
             this.fox.attack_pressed = false;
         }
 
-        if (this.time - this.last_spawn > this.spawn_interval) {
+        if (this.time - this.last_spawn > this.spawn_interval && this.num_raccoons < 20) {
             this.last_spawn = this.time;
             this.add_raccoon(timeStamp);
+            if (this.spawn_interval > 3000) {
+                this.spawn_interval -= 200;
+            }
         }
-        if (this.time - this.last_big_spawn > this.big_spawn_interval) {
+        if (this.time - this.last_big_spawn > this.big_spawn_interval && this.num_big < 5) {
             this.last_big_spawn = this.time;
             this.add_big_raccoon(timeStamp);
+            if (this.big_spawn_interval > 20000) {
+                this.spawn_interval -= 1000;
+            }
         }
         if (this.time - this.last_bolt_spawn > this.bolt_spawn_interval && this.num_bolts == 0) {
             this.last_bolt_spawn = this.time;
             this.add_bolt();
+            this.bolt_spawn_interval += 1000;
         }
-        if (this.time - this.last_syringe_spawn > this.syringe_spawn_interval && this.num_syringes == 0) {
+        if (this.time - this.last_syringe_spawn > this.syringe_spawn_interval && this.num_syringes == 0 && this.fox.num_syringes <= 3) {
             this.last_syringe_spawn = this.time;
+            this.syringe_spawn_interval += 2000;
             this.add_syringe();
         }
     }

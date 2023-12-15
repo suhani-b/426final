@@ -3,7 +3,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import MODEL from './raccoon.glb';
 
 class Raccoon extends Group {
-    constructor(parent, player, x0, z0, hp0) {
+    constructor(parent, player, x0, z0, hp0, speed) {
         // Call parent Group() constructor
         super();
 
@@ -38,7 +38,8 @@ class Raccoon extends Group {
 
         this.position.x = x0;
         this.position.z = z0;
-        this.speed = 0.03;
+
+        this.speed = speed;
         this.rx = 0;
         this.rz = 0;
         this.reroll = 0.01
@@ -109,6 +110,9 @@ class Raccoon extends Group {
         let dx = this.position.x - this.player.position.x;
         let dz = this.position.z - this.player.position.z;
         if (Math.sqrt(dx*dx + dz*dz) < this.player.attack2_radius) {
+            if (!this.dead) {
+                this.scene.num_raccoons -= 1;
+            }
             return true;
         }
 
@@ -122,7 +126,7 @@ class Raccoon extends Group {
         if (Math.random() < this.reroll) {
             this.speed *= (Math.random() + 0.5);
             if (this.speed > 0.05) {
-                this.speed = 0.02;
+                this.speed = 0.05;
             }
             this.rx = this.randomness * 2 * (Math.random() - 0.5);
             this.rz = this.randomness * 2 * (Math.random() - 0.5);
@@ -148,7 +152,10 @@ class Raccoon extends Group {
             this.hp -= 0.01;
             // console.log(this.hp);
             if (this.hp < 0 || this.dead) {
-                this.dead = true;
+                if (!this.dead) {
+                    this.scene.num_raccoons -= 1;
+                    this.dead = true;
+                }
                 this.speed = 0.1;
             }
             this.x_acc = -this.k * diff_x;

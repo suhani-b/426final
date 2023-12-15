@@ -11,6 +11,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { SeedScene } from 'scenes'
 import * as THREE from 'three';
 import { TGALoader } from 'three/examples/jsm/loaders/TGALoader.js';
+import SOUND from './sounds/sound-effects-library-spooky-ambience.mp3';
 
 
 function initScreen() {
@@ -155,30 +156,34 @@ document.body.appendChild(canvas);
 // controls.update();
 
 // ********* AUDIO ************ //
-const listener = new AudioListener();
-camera.add(listener);
-const sounds = [];
-const raccoon_1 = new Audio(listener);
-// const raccoon_2 = new Audio(listener);
-// const raccoon_3 = new Audio(listener);
-sounds['racooon_1'] = raccoon_1;
-// sounds['raccoon_2'] = raccoon_2;
-// sounds['raccoon_3'] = raccoon_3;
 
-const audioLoader = new AudioLoader();
-audioLoader.load('https://raw.githubusercontent.com/sb5334/426final/src/sounds/raccoon1.wav', function(buffer) {
-    raccoon_1.setBuffer(buffer);
-    raccoon_1.setLoop(true);
-    raccoon_1.setVolume(0.3);
-});
 
 // ****************************** //
 
+// create an AudioListener and add it to the camera
+// const listener = new THREE.AudioListener();
+// camera.add( listener );
 
+// // create a global audio source
+// const sound = new THREE.Audio( listener );
+
+// // load a sound and set it as the Audio object's buffer
+// const audioLoader = new THREE.AudioLoader();
+// audioLoader.load(SOUND, function( buffer ) {
+//     console.log("HUH");
+// 	sound.setBuffer( buffer );
+// 	sound.setLoop( true );
+// 	sound.setVolume( 100 );
+// 	sound.play();
+// });
+
+// sound.play();
 
 // Render loop
 const onAnimationFrameHandler = (timeStamp) => {
     // controls.update();
+    // sound.play();
+    console.log(sound.isPlaying);
     renderer.render(scene, camera);
     scene.update && scene.update(timeStamp, keys, camera, timerElement);
     window.requestAnimationFrame(onAnimationFrameHandler);
