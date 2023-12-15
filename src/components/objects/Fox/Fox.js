@@ -145,7 +145,7 @@ class Fox extends Group {
         attack_light.target.position.x = this.position.x;
         attack_light.target.position.z = this.position.z;
         attack_light.target.position.y = this.position.y;
-        console.log(attack_light.position, attack_light.target.position);
+        // console.log(attack_light.position, attack_light.target.position);
 
         if (this.attack_pressed) {
             this.light.intensity = 100;

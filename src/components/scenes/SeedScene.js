@@ -1,6 +1,6 @@
 import * as Dat from 'dat.gui';
 import { Scene, Color } from 'three';
-import { Fox, Land, Raccoon, Bolt, Syringe, Trap, PineTree, Grass } from 'objects';
+import { Fox, Land, Raccoon, BigRaccoon, Bolt, Syringe, Trap, PineTree } from 'objects';
 import { BasicLights } from 'lights';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { AmbientLight, Vector3 } from 'three';
@@ -21,11 +21,14 @@ class SeedScene extends Scene {
         this.last_spawn = 0;
         this.spawn_interval = 5000;
 
+        this.last_big_spawn = 0;
+        this.big_spawn_interval = 20000;
+
         this.last_bolt_spawn = 0;
-        this.bolt_spawn_interval = 1000;
+        this.bolt_spawn_interval = 5000;
 
         this.last_syringe_spawn = 0;
-        this.syringe_spawn_interval = 1000;
+        this.syringe_spawn_interval = 10000;
 
         // Init state
         // this.state = {
@@ -45,15 +48,18 @@ class SeedScene extends Scene {
         this.fox = new Fox(this);
         this.syringes = [];
         this.num_syringes = 0;
-        this.trap = new Trap();
+        // this.trap = new Trap();
         this.bolts = [];
         this.num_bolts = 0;
         this.syringe = new Syringe();
-        this.trap = new Trap();
+        // this.trap = new Trap();
         this.last_restart = 0;
 
         this.raccoons =[];
-        this.add_raccoon(0);
+        // this.add_raccoon(0);
+        this.big_raccoons = [];
+        // this.add_big_raccoon(0);
+
         this.game_over = false;
         this.resetting = false;
 
@@ -91,10 +97,14 @@ class SeedScene extends Scene {
         for (let raccoon of this.raccoons) {
             this.remove(raccoon);
         }
+        for (let raccoon of this.big_raccoons) {
+            this.remove(raccoon);
+        }
 
         this.fox = new Fox(this);
         this.add(this.fox);
         this.raccoons = [];
+        this.big_raccoons = [];
         this.timer.innerText = "Score: 0";
         this.last_restart = Math.floor(timestamp / 1000);
 
@@ -154,10 +164,29 @@ class SeedScene extends Scene {
        this.add(new_raccoon);
     }
 
+    add_big_raccoon(timestamp) {
+        let theta = Math.random() * 2 * Math.PI;
+        let x0 = Math.cos(theta) * (this.stage_radius + 1);
+        let z0 = Math.sin(theta) * (this.stage_radius + 1);
+        let dx = x0 - this.flower.position.x;
+        let dz = z0 - this.flower.position.z;
+        if (Math.sqrt(dx*dx + dz*dz) < 5) {
+         x0 = -x0;
+         z0 = -z0;
+        }
+
+ 
+        let new_raccoon = new BigRaccoon(this, this.flower, x0, z0);
+        this.big_raccoons.push(new_raccoon);
+        this.add(new_raccoon);
+     }
+
     update(timeStamp, keys, camera) {
         if (keys['k']) {
             this.startScreen.style.visibility = 'hidden';
         }
+        console.log(timeStamp);
+
         if (keys['r'] && this.game_over) {
             this.resetting = true;
         }
@@ -210,6 +239,9 @@ class SeedScene extends Scene {
         for (let raccoon of this.raccoons) {
             raccoon.update_2(timeStamp);
         }
+        for (let raccoon of this.big_raccoons) {
+            raccoon.update_2(timeStamp);
+        }
         for (let bolt of this.bolts) {
             bolt.update();
         }
@@ -256,6 +288,10 @@ class SeedScene extends Scene {
         if (timeStamp - this.last_spawn > this.spawn_interval) {
             this.last_spawn = timeStamp;
             this.add_raccoon(timeStamp);
+        }
+        if (timeStamp - this.last_big_spawn > this.big_spawn_interval) {
+            this.last_big_spawn = timeStamp;
+            this.add_big_raccoon(timeStamp);
         }
         if (timeStamp - this.last_bolt_spawn > this.bolt_spawn_interval && this.num_bolts == 0) {
             this.last_bolt_spawn = timeStamp;

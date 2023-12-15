@@ -1,6 +1,7 @@
 export * from './Fox';
 export * from './Land';
 export * from './Raccoon';
+export * from './BigRaccoon';
 export * from './Bolt';
 export * from './Syringe';
 export * from './Trap';
