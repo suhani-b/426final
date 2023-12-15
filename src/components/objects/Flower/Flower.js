@@ -12,6 +12,13 @@ class Flower extends Group {
         super();
         this.dead = false;
         this.attack_pressed = false;
+        this.prev_attack2 = false;
+        this.attack2_pressed = false;
+        this.attack2_in_progress = false;
+        this.attack2_radius = 0;
+        this.attack2_counter = 0;
+        this.num_syringes = 0;
+
         this.battery = 1;
 
         // this.z_vel = 0;
@@ -88,6 +95,7 @@ class Flower extends Group {
         // console.log("xy", x, y);
         // console.log("Angle", this.angle);
         this.rotation.y = this.angle + Math.PI/2;
+        
     }
 
     // spin() {
@@ -129,6 +137,15 @@ class Flower extends Group {
         // // Advance tween animations, if any exist
         // TWEEN.update();
         // console.log(this.attack_pressed)
+        let attack_light = this.scene.lights.attack_light;
+        attack_light.position.x = this.position.x;
+        attack_light.position.z = this.position.z;
+        attack_light.position.y = this.position.y + 6;
+        // console.log(attack_light.position);
+        attack_light.target.position.x = this.position.x;
+        attack_light.target.position.z = this.position.z;
+        attack_light.target.position.y = this.position.y;
+        console.log(attack_light.position, attack_light.target.position);
 
         if (this.attack_pressed) {
             this.light.intensity = 100;
@@ -148,13 +165,38 @@ class Flower extends Group {
             this.light.intensity = 0;
         }
 
+        if (!this.attack2_in_progress && this.attack2_pressed && !this.prev_attack2) {
+            if (this.num_syringes > 0) {
+                this.attack2_in_progress = true;
+                this.attack2_counter = 0;
+                this.num_syringes -= 1;
+            }
+            
+        }
+
+        let T = 25;
+        if (this.attack2_in_progress) {
+            // console.log(this.scene.lights);
+
+            this.attack2_radius = 1 + 4 * this.attack2_counter/T;
+
+            attack_light.position.y = this.position.y + this.attack2_radius;
+            attack_light.intensity = 20 * Math.pow(this.attack2_counter/T, 2);
+            this.attack2_counter += 1;
+        }
+
+        if (this.attack2_counter > T) {
+            this.attack2_in_progress = false;
+            this.scene.lights.attack_light.intensity = 0;
+        }
+
+
+
 
 
         
-
         
-        
-
+        this.prev_attack2 = this.attack2_pressed;
         return;
 
         // console.log(this.position);

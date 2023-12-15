@@ -10,6 +10,7 @@ class BasicLights extends Group {
         // const hemi = new HemisphereLight(0xffffbb, 0x080820, 2.3);
 
         const player_light = new SpotLight(0xffff00, 10, 100, 0.5, 0.4, 0.8);
+        const attack_light = new SpotLight(0xffffff, 0, 10, Math.PI/4, 0.2, 2);
         // const dir = new SpotLight(0xff00ff, 0, 7, 0.8, 1, 1);
         const ambi = new AmbientLight(0x404040, 1.32);
         // const hemi = new HemisphereLight(0xffffbb, 0x080820, 0.3);
@@ -19,7 +20,8 @@ class BasicLights extends Group {
         // console.log(player_light);
         player_light.position.set(30, 3, 3)
         this.player_light = player_light;
-        this.add(ambi, player_light);
+        this.attack_light = attack_light;
+        this.add(ambi, player_light, attack_light);
     }
 }
 

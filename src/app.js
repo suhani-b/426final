@@ -121,7 +121,10 @@ const handleKeyUp = (e) => {
         // keys['d'] -= 1;
     }
     if (e.key == " ") {
-        keys['l'] = 0;
+        keys[' '] = 0;
+    }
+    if (e.key == "l") {
+        keys['l'] = false;
     }
     if (e.key == "r") {
         keys['r'] = false;
@@ -144,10 +147,13 @@ const handleKeyDown = (e) => {
         keys['d'] += 1;
     }
     if (e.key == " ") {
-        keys['l'] = true;
+        keys[' '] = true;
     }
     if (e.key == "r") {
         keys['r'] = true;
+    }
+    if (e.key == "l") {
+        keys['l'] = true;
     }
     // scene.translate(keys);
     

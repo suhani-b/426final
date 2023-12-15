@@ -50,10 +50,22 @@ class Raccoon extends Group {
         this.D = 0.8;
         this.k = 1;
         this.retreat = false;
+
+        this.prev_attack = false;
+        this.attack_counter = 0;
     }
 
     is_attacked() {
+        if (this.prev_attack && this.attack_counter < 50) {
+            // console.log(this.attack_counter);
+            this.attack_counter += 1;
+            // console.GLTFLoader
+            this.prev_attack = true;
+            return true;
+        }
+
         if (!this.player.attack_pressed) {
+            this.prev_attack = false;
             return false;
         }
         let x = this.position.x - this.player.position.x;
@@ -77,14 +89,36 @@ class Raccoon extends Group {
         // console.log("Light distance", this.player.light.distance);
         if (Math.abs(theta - light_angle) < light_width || Math.abs(theta - light_angle - 2*Math.PI) < light_width || Math.abs(theta - light_angle + 2*Math.PI) < light_width) {
             if (Math.sqrt(x*x + z*z) < this.player.light.distance) {
+                // console.log("actually hit");
+                this.prev_attack = true;
+                this.attack_counter = 0;
                 return true;
             }
         }
+
+        this.prev_attack = false;
         return false;
 
     }
 
+    is_attacked_2() {
+        if (!this.player.attack2_in_progress) {
+            return false;
+        }
+
+        let dx = this.position.x - this.player.position.x;
+        let dz = this.position.z - this.player.position.z;
+        if (Math.sqrt(dx*dx + dz*dz) < this.player.attack2_radius) {
+            return true;
+        }
+
+    }
+
     update_2(timestamp) {
+        if (this.is_attacked_2()) {
+            this.dead = true;
+        }
+
         if (Math.random() < this.reroll) {
             this.speed *= (Math.random() + 0.5);
             if (this.speed > 0.05) {
@@ -113,7 +147,7 @@ class Raccoon extends Group {
             this.speed = 0.02
             this.hp -= 0.01;
             // console.log(this.hp);
-            if (this.hp < 0) {
+            if (this.hp < 0 || this.dead) {
                 this.dead = true;
                 this.speed = 0.1;
             }
@@ -179,7 +213,7 @@ class Raccoon extends Group {
             dz = dz/len;
         }
 
-        console.log(this.move_random)
+        // console.log(this.move_random)
 
         let rand_var = Math.random();
         if (this.move_random && rand_var < this.away_random) {

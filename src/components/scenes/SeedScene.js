@@ -22,6 +22,9 @@ class SeedScene extends Scene {
         this.last_bolt_spawn = 0;
         this.bolt_spawn_interval = 1000;
 
+        this.last_syringe_spawn = 0;
+        this.syringe_spawn_interval = 1000;
+
         // Init state
         // this.state = {
         //     gui: new Dat.GUI(), // Create GUI for scene
@@ -38,7 +41,8 @@ class SeedScene extends Scene {
         // Add meshes to scene
         this.land = new Land();
         this.flower = new Flower(this);
-        this.syringe = new Syringe();
+        this.syringes = [];
+        this.num_syringes = 0;
         this.trap = new Trap();
         this.bolts = [];
         this.num_bolts = 0;
@@ -108,9 +112,15 @@ class SeedScene extends Scene {
     add_bolt() {
         console.log('adding');
         let theta = 2 * Math.PI * (Math.random());
-        let r = Math.random() * this.stage_radius;
+        let r = Math.sqrt(Math.random()) * (this.stage_radius - 4) + 2;
         let x0 = r * Math.cos(theta);
         let z0 = r * Math.sin(theta);
+        let dx = x0 - this.flower.position.x;
+        let dz = z0 - this.flower.position.z;
+        if (Math.sqrt(dx*dx + dz*dz) < 5) {
+            x0 = -x0;
+            z0 = -z0;
+        }
 
 
 
@@ -118,6 +128,27 @@ class SeedScene extends Scene {
         this.bolts.push(new_bolt);
         this.add(new_bolt);
         this.num_bolts += 1;
+    }
+
+    add_syringe() {
+        console.log('adding');
+        let theta = 2 * Math.PI * (Math.random());
+        let r = Math.sqrt(Math.random()) * (this.stage_radius - 4) + 2;
+        let x0 = r * Math.cos(theta);
+        let z0 = r * Math.sin(theta);
+        let dx = x0 - this.flower.position.x;
+        let dz = z0 - this.flower.position.z;
+        if (Math.sqrt(dx*dx + dz*dz) < 5) {
+            x0 = -x0;
+            z0 = -z0;
+        }
+
+
+
+        let new_syringe = new Syringe(this, x0, z0);
+        this.syringes.push(new_syringe);
+        this.add(new_syringe);
+        this.num_syringes += 1;
     }
 
 
@@ -192,6 +223,9 @@ class SeedScene extends Scene {
         for (let bolt of this.bolts) {
             bolt.update();
         }
+        for (let syringe of this.syringes) {
+            syringe.update();
+        }
         
         this.flower.update(timeStamp);
         // for (const obj of updateList) {
@@ -207,15 +241,24 @@ class SeedScene extends Scene {
         this.lights.player_light.target.position.y = this.flower.position.y + 0;
         this.lights.player_light.target.position.z = this.flower.position.z + 10*Math.sin(this.flower.angle);
         // this.lights.player_light.target.position.x = this.flower.position.x;
-        // this.lights.player_light.target.position.y = this.flower.position.y + 0;
+        // this.lights.player_light.tar.targetget.position.y = this.flower.position.y + 0;
         // this.lights.player_light.target.position.z = this.flower.position.z;
         // console.log("Player", this.lights.player_light.position);
         // console.log("Target", this.lights.player_light.target.position);
         this.add(this.lights.player_light.target);
+        this.add(this.lights.attack_light.target);
         // console.log("Position", this.lights.player_light.position);
         // console.log("Target", this.lights.player_light.target.position);
         this.translate(keys, camera);
+
         if (keys['l']) {
+            this.flower.attack2_pressed = true;
+        }
+        else {
+            this.flower.attack2_pressed = false;
+        }
+
+        if (keys[' ']) {
             this.flower.attack_pressed = true;
         }
         else {
@@ -229,6 +272,10 @@ class SeedScene extends Scene {
         if (timeStamp - this.last_bolt_spawn > this.bolt_spawn_interval && this.num_bolts == 0) {
             this.last_bolt_spawn = timeStamp;
             this.add_bolt();
+        }
+        if (timeStamp - this.last_syringe_spawn > this.syringe_spawn_interval && this.num_syringes == 0) {
+            this.last_syringe_spawn = timeStamp;
+            this.add_syringe();
         }
     }
 
