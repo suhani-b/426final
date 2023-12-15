@@ -8,7 +8,7 @@ import * as THREE from 'three';
 
 
 class SeedScene extends Scene {
-    constructor(timerElement, batteryElement, startScreen, endScreen) {
+    constructor(timerElement, batteryElement, startScreen, endScreen, syringeCounter) {
         // Call parent Scene() constructor
 
         super();
@@ -16,6 +16,7 @@ class SeedScene extends Scene {
 
         this.timer = timerElement;
         this.battery = batteryElement;
+        this.syringeCounter = syringeCounter;
         this.startScreen = startScreen;
         this.startScreen.style.visibility = 'visible';
         this.endScreen = endScreen;
@@ -181,6 +182,7 @@ class SeedScene extends Scene {
         this.syringes.push(new_syringe);
         this.add(new_syringe);
         this.num_syringes += 1;
+        // this.syringeCounter.innerText += "💉";
 
         this.lights.syringe_light.position.x = x0;
         this.lights.syringe_light.position.z = z0;
@@ -248,6 +250,8 @@ class SeedScene extends Scene {
         // camera.position.set(camera_pos)
         // console.log("Cam", camera_pos);
         // console.log("Flow", this.fox.position);
+        let vaccine_string = "💉".repeat(this.fox.num_syringes);
+        this.syringeCounter.innerText = "Vaccines: "+ vaccine_string;
 
         let lookAtPos = new Vector3(0, 0, 0);
         lookAtPos.x = this.fox.position.x - Math.cos(this.fox.angle);

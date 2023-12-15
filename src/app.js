@@ -102,16 +102,34 @@ function initBattery() {
     return batteryElement;
 }
 
+function initSyringes() {
+    const syringeCounter = document.createElement('div');
+    syringeCounter.id = 'syringe'; // Set an ID for styling
+    syringeCounter.style.position = 'absolute';
+    syringeCounter.style.marginTop = '100px';
+    syringeCounter.style.top = '20px'; // Adjust the position as needed
+    syringeCounter.style.left = '20px'; // Adjust the position as needed
+    syringeCounter.style.padding = '10px';
+    syringeCounter.style.background = '#000';
+    syringeCounter.style.border = '0.5px solid #fff';
+    syringeCounter.style.fontFamily = 'Arial, sans-serif';
+    syringeCounter.style.color = '#fff';
+
+    // Append the timer element to the document body
+    document.body.appendChild(syringeCounter);
+
+    return syringeCounter;
+}
 
 
 const timerElement = initTimer();
 const batteryElement = initBattery();
 const startScreen = initScreen()
 const endScreen = initEnd();
-
+const syringeCounter = initSyringes();
 
 // Initialize core ThreeJS components
-const scene = new SeedScene(timerElement, batteryElement, startScreen, endScreen);
+const scene = new SeedScene(timerElement, batteryElement, startScreen, endScreen, syringeCounter);
 const camera = new PerspectiveCamera();
 const renderer = new WebGLRenderer({ antialias: true });
 
