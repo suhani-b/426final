@@ -1,6 +1,6 @@
 import * as Dat from 'dat.gui';
 import { Scene, Color } from 'three';
-import { Flower, Land, Raccoon, Bolt, Syringe, Trap, PineTree } from 'objects';
+import { Fox, Land, Raccoon, Bolt, Syringe, Trap, PineTree, Grass } from 'objects';
 import { BasicLights } from 'lights';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { AmbientLight, Vector3 } from 'three';
@@ -11,7 +11,6 @@ class SeedScene extends Scene {
 
         super();
 
-        
         this.timer = timerElement;
         this.battery = batteryElement;
         this.startScreen = startScreen;
@@ -43,7 +42,7 @@ class SeedScene extends Scene {
 
         // Add meshes to scene
         this.land = new Land();
-        this.flower = new Flower(this);
+        this.fox = new Fox(this);
         this.syringes = [];
         this.num_syringes = 0;
         this.trap = new Trap();
@@ -58,17 +57,8 @@ class SeedScene extends Scene {
         this.game_over = false;
         this.resetting = false;
 
-        let r = this.stage_radius;
-        
-        for (let angle = 0; angle < (2 * Math.PI); angle += (Math.PI / 18)) {
-            this.add(new PineTree((r+3)*Math.cos(angle), 0, (r+3)*Math.sin(angle)));
-            this.add(new PineTree((r+2)*Math.cos(angle + (Math.PI/36)), 0, (r+2)*Math.sin(angle + (Math.PI/36))));
-            this.add(new PineTree((r+1)*Math.cos(angle), 0, (r+1)*Math.sin(angle)));
-            this.add(new PineTree(r*Math.cos(angle + (Math.PI/36)), 0, r*Math.sin(angle + (Math.PI/36))));
-        }
-
-        this.add(this.land, this.flower, this.lights, this.syringe, this.trap);
-
+        this.add(this.land, this.fox, this.lights, this.syringe, this.trap);
+        this.createScenery();
         // Populate GUI
         // this.state.gui.add(this.state, 'rotationSpeed', -5, 5);
     }
@@ -77,17 +67,33 @@ class SeedScene extends Scene {
     //     this.state.updateList.push(object);
     // }
 
+    createScenery() {
+        let r = this.stage_radius;
+        
+        for (let angle = 0; angle < (2 * Math.PI); angle += (Math.PI / 18)) {
+            this.add(new PineTree((r+3)*Math.cos(angle), 0, (r+3)*Math.sin(angle)));
+            this.add(new PineTree((r+2)*Math.cos(angle + (Math.PI/36)), 0, (r+2)*Math.sin(angle + (Math.PI/36))));
+            this.add(new PineTree((r+1)*Math.cos(angle), 0, (r+1)*Math.sin(angle)));
+            this.add(new PineTree(r*Math.cos(angle + (Math.PI/36)), 0, r*Math.sin(angle + (Math.PI/36))));
+        }
+        for (let i = -r; i <= r; i++) {
+            for (let j = -r; j <= r; j++) {
+                this.add(new Grass(i, 0, j));
+            }
+        }
+    }
+
     reset(timestamp) {
         console.log("reset");
         this.game_over = false;
         this.endScreen.style.visibility = 'hidden';
-        this.remove(this.flower);
+        this.remove(this.fox);
         for (let raccoon of this.raccoons) {
             this.remove(raccoon);
         }
 
-        this.flower = new Flower(this);
-        this.add(this.flower);
+        this.fox = new Fox(this);
+        this.add(this.fox);
         this.raccoons = [];
         this.timer.innerText = "Score: 0";
         this.last_restart = Math.floor(timestamp / 1000);
@@ -95,20 +101,17 @@ class SeedScene extends Scene {
     }
 
     add_bolt() {
-        console.log('adding');
+        console.log('adding bolts');
         let theta = 2 * Math.PI * (Math.random());
         let r = Math.sqrt(Math.random()) * (this.stage_radius - 4) + 2;
         let x0 = r * Math.cos(theta);
         let z0 = r * Math.sin(theta);
-        let dx = x0 - this.flower.position.x;
-        let dz = z0 - this.flower.position.z;
+        let dx = x0 - this.fox.position.x;
+        let dz = z0 - this.fox.position.z;
         if (Math.sqrt(dx*dx + dz*dz) < 5) {
             x0 = -x0;
             z0 = -z0;
         }
-
-
-
         let new_bolt = new Bolt(this, x0, z0);
         this.bolts.push(new_bolt);
         this.add(new_bolt);
@@ -116,20 +119,17 @@ class SeedScene extends Scene {
     }
 
     add_syringe() {
-        console.log('adding');
+        console.log('adding syringe');
         let theta = 2 * Math.PI * (Math.random());
         let r = Math.sqrt(Math.random()) * (this.stage_radius - 4) + 2;
         let x0 = r * Math.cos(theta);
         let z0 = r * Math.sin(theta);
-        let dx = x0 - this.flower.position.x;
-        let dz = z0 - this.flower.position.z;
+        let dx = x0 - this.fox.position.x;
+        let dz = z0 - this.fox.position.z;
         if (Math.sqrt(dx*dx + dz*dz) < 5) {
             x0 = -x0;
             z0 = -z0;
         }
-
-
-
         let new_syringe = new Syringe(this, x0, z0);
         this.syringes.push(new_syringe);
         this.add(new_syringe);
@@ -141,16 +141,15 @@ class SeedScene extends Scene {
        let theta = Math.random() * 2 * Math.PI;
        let x0 = Math.cos(theta) * (this.stage_radius + 1);
        let z0 = Math.sin(theta) * (this.stage_radius + 1);
-       let dx = x0 - this.flower.position.x;
-       let dz = z0 - this.flower.position.z;
+       let dx = x0 - this.fox.position.x;
+       let dz = z0 - this.fox.position.z;
        if (Math.sqrt(dx*dx + dz*dz) < 5) {
         x0 = -x0;
         z0 = -z0;
        }
        
        let secs = timestamp / 10000 + 1;
-
-       let new_raccoon = new Raccoon(this, this.flower, x0, z0, secs);
+       let new_raccoon = new Raccoon(this, this.fox, x0, z0, secs);
        this.raccoons.push(new_raccoon);
        this.add(new_raccoon);
     }
@@ -177,16 +176,16 @@ class SeedScene extends Scene {
             return;
         }
         this.timer.innerText = "Score: " + (Math.floor(timeStamp / 1000) - this.last_restart);
-        let bat = Math.max(0, this.flower.battery);
+        let bat = Math.max(0, this.fox.battery);
         this.battery.innerText = "Battery: " + Math.floor(bat * 100) + "%";
        
 
         // console.log(timeStamp);
-        let camera_pos = this.flower.position.clone();
-        // console.log(this.flower);
-        camera.position.x = camera_pos.x + 8*Math.cos(this.flower.angle);
+        let camera_pos = this.fox.position.clone();
+        // console.log(this.fox);
+        camera.position.x = camera_pos.x + 8*Math.cos(this.fox.angle);
         camera.position.y = camera_pos.y + 5;
-        camera.position.z = camera_pos.z - 8*Math.sin(this.flower.angle);
+        camera.position.z = camera_pos.z - 8*Math.sin(this.fox.angle);
         // camera_pos.x = 10;
         // camera_pos.y = 10;
         // camera_pos.z = 10;
@@ -196,13 +195,13 @@ class SeedScene extends Scene {
         // camera.position.z = 10;
         // camera.position.set(camera_pos)
         // console.log("Cam", camera_pos);
-        // console.log("Flow", this.flower.position);
+        // console.log("Flow", this.fox.position);
 
         let lookAtPos = new Vector3(0, 0, 0);
-        lookAtPos.x = this.flower.position.x - Math.cos(this.flower.angle);
-        lookAtPos.z = this.flower.position.z + Math.sin(this.flower.angle);
-        lookAtPos.y = this.flower.position.y + 2;
-        camera.lookAt(this.flower.position);
+        lookAtPos.x = this.fox.position.x - Math.cos(this.fox.angle);
+        lookAtPos.z = this.fox.position.z + Math.sin(this.fox.angle);
+        lookAtPos.y = this.fox.position.y + 2;
+        camera.lookAt(this.fox.position);
         // camera.lookAt(lookAtPos);
         // const { rotationSpeed, updateList } = this.state;
         // this.rotation.y = (rotationSpeed * timeStamp) / 10000;
@@ -218,22 +217,22 @@ class SeedScene extends Scene {
             syringe.update();
         }
         
-        this.flower.update(timeStamp);
+        this.fox.update(timeStamp);
         // for (const obj of updateList) {
         //     console.log(obj);
         //     obj.update(timeStamp);
         // }
 
         // console.log(this.lights.player_light);
-        this.lights.player_light.position.x = this.flower.position.x;
-        this.lights.player_light.position.y = this.flower.position.y + 1;
-        this.lights.player_light.position.z = this.flower.position.z;
-        this.lights.player_light.target.position.x = this.flower.position.x - 10*Math.cos(this.flower.angle);
-        this.lights.player_light.target.position.y = this.flower.position.y + 0;
-        this.lights.player_light.target.position.z = this.flower.position.z + 10*Math.sin(this.flower.angle);
-        // this.lights.player_light.target.position.x = this.flower.position.x;
-        // this.lights.player_light.tar.targetget.position.y = this.flower.position.y + 0;
-        // this.lights.player_light.target.position.z = this.flower.position.z;
+        this.lights.player_light.position.x = this.fox.position.x;
+        this.lights.player_light.position.y = this.fox.position.y + 1;
+        this.lights.player_light.position.z = this.fox.position.z;
+        this.lights.player_light.target.position.x = this.fox.position.x - 10*Math.cos(this.fox.angle);
+        this.lights.player_light.target.position.y = this.fox.position.y + 0;
+        this.lights.player_light.target.position.z = this.fox.position.z + 10*Math.sin(this.fox.angle);
+        // this.lights.player_light.target.position.x = this.fox.position.x;
+        // this.lights.player_light.tar.targetget.position.y = this.fox.position.y + 0;
+        // this.lights.player_light.target.position.z = this.fox.position.z;
         // console.log("Player", this.lights.player_light.position);
         // console.log("Target", this.lights.player_light.target.position);
         this.add(this.lights.player_light.target);
@@ -241,17 +240,17 @@ class SeedScene extends Scene {
         this.translate(keys, camera);
 
         if (keys['l']) {
-            this.flower.attack2_pressed = true;
+            this.fox.attack2_pressed = true;
         }
         else {
-            this.flower.attack2_pressed = false;
+            this.fox.attack2_pressed = false;
         }
 
         if (keys[' ']) {
-            this.flower.attack_pressed = true;
+            this.fox.attack_pressed = true;
         }
         else {
-            this.flower.attack_pressed = false;
+            this.fox.attack_pressed = false;
         }
 
         if (timeStamp - this.last_spawn > this.spawn_interval) {
@@ -271,7 +270,7 @@ class SeedScene extends Scene {
 
     spin() {
         // console.log("spinning");
-        this.flower.spin();
+        this.fox.spin();
     }
 
     translate(keys_down, camera) {
@@ -300,8 +299,8 @@ class SeedScene extends Scene {
         }
         
         // console.log(x_change, z_change);
-        let diff_x = -(this.flower.position.x - camera.position.x);
-        let diff_z = this.flower.position.z - camera.position.z;
+        let diff_x = -(this.fox.position.x - camera.position.x);
+        let diff_z = this.fox.position.z - camera.position.z;
         let A = -diff_z;
         let C = diff_x;
         let B = diff_x;
@@ -326,8 +325,8 @@ class SeedScene extends Scene {
         // x_change_2 = x_change;
         // z_change_2 = z_change;
 
-        this.flower.translate(x_change_2 * speed, z_change_2 * speed);
-        // console.log(Math.sqrt((this.flower.position.x - camera.position.x) * (this.flower.position.x - camera.position.x) + (this.flower.position.z - camera.position.z) * (this.flower.position.z - camera.position.z)))
+        this.fox.translate(x_change_2 * speed, z_change_2 * speed);
+        // console.log(Math.sqrt((this.fox.position.x - camera.position.x) * (this.fox.position.x - camera.position.x) + (this.fox.position.z - camera.position.z) * (this.fox.position.z - camera.position.z)))
     }
 }
 

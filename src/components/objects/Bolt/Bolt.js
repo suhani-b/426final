@@ -28,7 +28,7 @@ class Bolt extends Group {
     }
 
     update() {
-        let player = this.scene.flower;
+        let player = this.scene.fox;
         let dx = player.position.x - this.position.x;
         let dz = player.position.z - this.position.z;
         if (Math.sqrt(dx*dx + dz*dz) < this.collision_radius) {

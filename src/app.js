@@ -137,7 +137,7 @@ document.body.appendChild(canvas);
 const onAnimationFrameHandler = (timeStamp) => {
     // controls.update();
     renderer.render(scene, camera);
-    scene.update && scene.update(timeStamp, keys, camera, timerElement);
+    if (keys['k'] == true) {scene.update && scene.update(timeStamp, keys, camera, timerElement)};
     window.requestAnimationFrame(onAnimationFrameHandler);
 };
 window.requestAnimationFrame(onAnimationFrameHandler);
@@ -178,9 +178,9 @@ const handleKeyUp = (e) => {
     if (e.key == "r") {
         keys['r'] = false;
     }
-    if (e.key == "k") {
-        keys['k'] = false;
-    }
+    // if (e.key == "k") {
+    //     keys['k'] = false;
+    // }
     // scene.translate(keys);
     
 }

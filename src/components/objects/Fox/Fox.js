@@ -5,7 +5,7 @@ import { TWEEN } from 'three/examples/jsm/libs/tween.module.min.js';
 import MODEL from './low_poly_fox.glb';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 
-class Flower extends Group {
+class Fox extends Group {
     constructor(parent) {
         // Call parent Group() constructor
 
@@ -203,4 +203,4 @@ class Flower extends Group {
     }
 }
 
-export default Flower;
+export default Fox;
