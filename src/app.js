@@ -17,8 +17,8 @@ import SOUND from './sounds/sound-effects-library-spooky-ambience.mp3';
 function initScreen() {
     const startScreen = document.createElement('div');
     startScreen.style.position = 'absolute';
-    startScreen.style.top = '10vh'; // Adjust the position as needed
-    startScreen.style.left = '25vw'; // Adjust the position as needed
+    startScreen.style.top = '15vh'; // Adjust the position as needed
+    startScreen.style.left = '32vw'; // Adjust the position as needed
     startScreen.style.height = '500px';
     startScreen.style.width = '600px';
     startScreen.style.padding = '30px';
@@ -46,8 +46,8 @@ function initScreen() {
 function initEnd() {
     const endScreen = document.createElement('div');
     endScreen.style.position = 'absolute';
-    endScreen.style.top = '10vh'; // Adjust the position as needed
-    endScreen.style.left = '25vw'; // Adjust the position as needed
+    endScreen.style.top = '15vh'; // Adjust the position as needed
+    endScreen.style.left = '32vw'; // Adjust the position as needed
     endScreen.style.height = '500px';
     endScreen.style.width = '600px';
     endScreen.style.padding = '20px';
@@ -183,7 +183,6 @@ document.body.appendChild(canvas);
 const onAnimationFrameHandler = (timeStamp) => {
     // controls.update();
     // sound.play();
-    console.log(sound.isPlaying);
     renderer.render(scene, camera);
     scene.update && scene.update(timeStamp, keys, camera, timerElement);
     window.requestAnimationFrame(onAnimationFrameHandler);
