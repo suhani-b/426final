@@ -1,3 +1,10 @@
+# Project-Specific Links
+Writeup PDF: https://drive.google.com/file/d/1o_uL3FjxWBlE564bDxpJmPVWXz4J-ma0/view?usp=sharing
+
+Demo Video Link: https://drive.google.com/file/d/1czuje4hIfnOiIDpAn21FuN_6feosr7Cw/view?usp=sharing
+
+Online Demo Link: https://suhani-b.github.io/426final/
+
 # COS 426 Final Project Template
 This skeleton project will help you get started with a ThreeJS project and provide a strong foundation for extension. It sets up a simple scene, camera, and renderer in a modern JavaScript environment, and is written using some common best-practices that you may want to draw from.
 
