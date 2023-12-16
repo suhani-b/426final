@@ -266,18 +266,3 @@ windowResizeHandler();
 window.addEventListener('resize', windowResizeHandler, false);
 window.addEventListener('keyup', handleKeyUp);
 window.addEventListener('keydown', handleKeyDown);
-
-
-
-
-//   function updateTimer(timerElement) {
-//     let time = 0;
-  
-//     setInterval(function() {
-//       time += 1; // Increment the timer value (you can adjust this logic)
-//       timerElement.innerText = 'Timer: ' + time; // Display the timer value
-//     }, 1000); // Update the timer every second (1000ms)
-//   }
-  
-//   // Start the timer
-//   updateTimer(timerElement);
