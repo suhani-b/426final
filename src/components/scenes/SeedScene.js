@@ -192,8 +192,11 @@ class SeedScene extends Scene {
         z0 = -z0;
        }
        
-       let secs = (timestamp - this.last_restart) / 30000 + 1;
-       let speed = 0.02 + (1/40) * ((timestamp - this.last_restart) / (1000*100));
+       let secs = (timestamp - 1000*this.last_restart) / 30000 + 1;
+       let speed = 0.02 + (1/40) * ((timestamp - 1000*this.last_restart) / (1000*100));
+       if (speed > 0.05) {
+        speed = 0.05;
+       }
        let new_raccoon = new Raccoon(this, this.fox, x0, z0, secs, speed);
        this.raccoons.push(new_raccoon);
        this.add(new_raccoon);
